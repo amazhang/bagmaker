@@ -1,0 +1,20 @@
+# Don't reformat third-party libraries we vendored in.
+public/javascripts/libs/**
+public/javascripts/min/**
+public/stylesheets/min/**
+public/stylesheets/style.css
+public/stylesheets/css/**
+public/pages/**
+
+# Don't touch old jQuery-era source files — Prettier would create a huge,
+# noisy diff. Hand-edit these as needed instead.
+public/javascripts/browse.js
+public/javascripts/create.js
+public/javascripts/main.js
+public/javascripts/view.js
+
+# Build artifacts and deps
+node_modules/
+dist/
+.git/
+data/
