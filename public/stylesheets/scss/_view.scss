@@ -1,6 +1,6 @@
 @media screen and (max-width: $smlBP) {
-    body .content.browse-page{
-        .view-carousel .view-controls{
+    body .content.browse-page {
+        .view-carousel .view-controls {
             top: auto;
             bottom: 0;
             width: ($button-size-sml * 3) + ($body-padding-sml * 2);
@@ -8,42 +8,40 @@
             right: 0;
             margin: 0 auto;
             text-align: center;
-            
-            & > *{
+
+            & > * {
                 position: absolute;
                 margin-left: 0;
             }
 
-            .arrow.left{
+            .arrow.left {
                 left: 0;
             }
-            .arrow.right{
+            .arrow.right {
                 right: 0;
             }
-            .heart-outer-wrap{
+            .heart-outer-wrap {
                 @include centerAbsH;
             }
         }
     }
 }
 @media screen and (max-width: $medBP) {
-    body .content.browse-page{
-        .view-carousel .view-controls{
-
-            .heart-outer-wrap{
+    body .content.browse-page {
+        .view-carousel .view-controls {
+            .heart-outer-wrap {
                 width: $button-size-sml;
                 height: $button-size-sml;
-
             }
         }
     }
 }
 
-#viewId{
+#viewId {
     display: none;
 }
 
-.content.browse-page .zoomTransition{
+.content.browse-page .zoomTransition {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -53,7 +51,7 @@
     pointer-events: none;
     z-index: $z-third-level - 10;
 
-    .zoomAnimationWrapper{
+    .zoomAnimationWrapper {
         width: 100%;
         height: 100%;
         overflow: auto;
@@ -61,14 +59,14 @@
         top: 0;
         left: 0;
     }
-    .tote-grid-element{
-        .tote-wrap .actual-tote .bag-bottom .br-corner{
+    .tote-grid-element {
+        .tote-wrap .actual-tote .bag-bottom .br-corner {
             right: -2px;
         }
     }
 }
 
-body .view-carousel{
+body .view-carousel {
     width: 100%;
     height: 0;
     position: fixed;
@@ -79,25 +77,25 @@ body .view-carousel{
     pointer-events: none;
     // @include prefix (transition, 0.5s $easing-curve);
     overflow: hidden;
-    
-    &.on{
+
+    &.on {
         opacity: 1;
         height: 100vh;
         pointer-events: auto;
 
-        .view-carousel-wrap .tote-grid-element .tote-wrap .actual-tote .shadow-blur .tote-shadow{
-            @include prefix (transform, translateY(0));
+        .view-carousel-wrap .tote-grid-element .tote-wrap .actual-tote .shadow-blur .tote-shadow {
+            @include prefix(transform, translateY(0));
         }
-        .view-controls{
+        .view-controls {
             // @include prefix (transform, translateY(0));
             opacity: 1;
         }
     }
 
-    &.no-transition{
-        @include prefix (transition, none);
+    &.no-transition {
+        @include prefix(transition, none);
     }
-    .view-carousel-wrap{
+    .view-carousel-wrap {
         width: 302vw; // should be 300, for some reason, it needs to be more for the grid elements to fit on the page.
         position: absolute;
         top: 0;
@@ -105,60 +103,61 @@ body .view-carousel{
         height: 100%;
         overflow: auto;
 
-        .tote-grid-element{
+        .tote-grid-element {
             width: 100vw;
             padding-bottom: 0;
             height: 150vh;
             // background-color: transparent;
-            
-            .tote-wrap{
+
+            .tote-wrap {
                 margin: 0 auto;
 
-                .actual-tote{
-                    .bag-bottom .br-corner{
+                .actual-tote {
+                    .bag-bottom .br-corner {
                         right: -2px;
                     }
-                    .shadow-blur{
+                    .shadow-blur {
                         opacity: 1;
-                        @include prefix (transition, 0s);
+                        @include prefix(transition, 0s);
 
-                        .tote-shadow{
+                        .tote-shadow {
                             opacity: 0;
-                            @include prefix (transform, translateY(-100px));
+                            @include prefix(transform, translateY(-100px));
                         }
                     }
                 }
             }
 
-            .heart-outer-wrap{
+            .heart-outer-wrap {
                 display: none;
             }
 
-            .tote-wrap .actual-tote{
-                .handle:before{
+            .tote-wrap .actual-tote {
+                .handle:before {
                     // background-color: rgba(255,255,255,0.95);
                 }
-                .bag-bottom{
-                    .bl-corner, .br-corner{
+                .bag-bottom {
+                    .bl-corner,
+                    .br-corner {
                         // border-left-color: rgba(255,255,255,0.95);
                         // border-bottom-color: rgba(255,255,255,0.95);
                     }
                 }
             }
 
-            &:hover{
-                .tote-wrap{
-                    @include prefix (transform, translateY(-50%));
+            &:hover {
+                .tote-wrap {
+                    @include prefix(transform, translateY(-50%));
                 }
             }
         }
     }
-    button.close{
+    button.close {
         position: absolute;
         top: $body-padding-sml;
         left: $body-padding-sml;
     }
-    .view-controls{
+    .view-controls {
         position: fixed;
         top: 0;
         right: 0;
@@ -167,67 +166,67 @@ body .view-carousel{
         height: $body-padding-sml * 2 + $button-size;
         text-align: right;
         padding: $body-padding-sml;
-        @include prefix (transition, 0.5s $easing-curve);
+        @include prefix(transition, 0.5s $easing-curve);
         opacity: 0;
 
-        & > *{
+        & > * {
             display: inline-block;
             position: relative;
             vertical-align: middle;
             margin-left: $body-padding * 0.5;
 
-            &:first-child{
+            &:first-child {
                 margin-left: 0;
             }
         }
 
-        .heart-outer-wrap{
+        .heart-outer-wrap {
             width: $button-size;
             height: $button-size;
 
-            &.black{
-                svg path{
-                    @include prefix (fill, rgba(26, 25, 25, .2));
+            &.black {
+                svg path {
+                    @include prefix(fill, rgba(26, 25, 25, 0.2));
                 }
             }
-            &.white{
-                .heart svg path{
-                    @include prefix (fill, rgba(254, 67, 68, 1));
+            &.white {
+                .heart svg path {
+                    @include prefix(fill, rgba(254, 67, 68, 1));
                 }
             }
-            &.red{
-                .heart svg path{
-                    @include prefix (fill, rgba(60, 60, 60, 1));
+            &.red {
+                .heart svg path {
+                    @include prefix(fill, rgba(60, 60, 60, 1));
                 }
             }
-            &.favorited{
-                .heart svg path{
-                    @include prefix (fill, rgba(255, 255, 255, 1));
+            &.favorited {
+                .heart svg path {
+                    @include prefix(fill, rgba(255, 255, 255, 1));
                 }
             }
         }
 
-        button.arrow{
-            &:after{
+        button.arrow {
+            &:after {
                 width: 40%;
                 height: 40%;
                 background-position: center center;
                 background-repeat: no-repeat;
                 background-size: contain;
                 opacity: 0.3;
-                content: "";
+                content: '';
                 @include centerAbsV;
                 @include centerAbsH;
-                @include prefix (transition, 0.3s $easing-curve);
+                @include prefix(transition, 0.3s $easing-curve);
             }
-            &:hover:after{
+            &:hover:after {
                 opacity: 0.5;
             }
-            &.left:after{
-                background-image: url("/images/left-black-arrow.svg");
+            &.left:after {
+                background-image: url('/images/left-black-arrow.svg');
             }
-            &.right:after{
-                background-image: url("/images/right-black-arrow.svg");
+            &.right:after {
+                background-image: url('/images/right-black-arrow.svg');
             }
         }
     }

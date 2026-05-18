@@ -17,8 +17,10 @@ function getSortAttributeNextFromSort(sort) {
     const sortAttribute = {};
     if (sort === 'latest') sortAttribute.timestamp = -1;
     else if (sort === 'oldest') sortAttribute.timestamp = 1;
-    else if (sort === 'popular') { sortAttribute.likes = -1; sortAttribute._id = -1; }
-    else if (sort === 'views') sortAttribute.views = -1;
+    else if (sort === 'popular') {
+        sortAttribute.likes = -1;
+        sortAttribute._id = -1;
+    } else if (sort === 'views') sortAttribute.views = -1;
     return sortAttribute;
 }
 

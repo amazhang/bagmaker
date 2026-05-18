@@ -1,73 +1,81 @@
-@mixin font-face($font-family, $file-path, $weight: normal, $style: normal, $asset-pipeline: $asset-pipeline) {
-  @font-face {
-    font-family: $font-family;
-    font-weight: $weight;
-    font-style: $style;
+@mixin font-face(
+    $font-family,
+    $file-path,
+    $weight: normal,
+    $style: normal,
+    $asset-pipeline: $asset-pipeline
+) {
+    @font-face {
+        font-family: $font-family;
+        font-weight: $weight;
+        font-style: $style;
 
-    @if $asset-pipeline == true {
-      src: font-url('#{$file-path}.eot');
-      src: font-url('#{$file-path}.eot?#iefix')          format('embedded-opentype'),
-           font-url('#{$file-path}.woff')                format('woff'),
-           font-url('#{$file-path}.ttf')                 format('truetype'),
-           font-url('#{$file-path}.svg##{$font-family}') format('svg');
-    } @else {
-      src: url('#{$file-path}.eot');
-      src: url('#{$file-path}.eot?#iefix')               format('embedded-opentype'),
-           url('#{$file-path}.woff')                     format('woff'),
-           url('#{$file-path}.ttf')                      format('truetype'),
-           url('#{$file-path}.svg##{$font-family}')      format('svg');
+        @if $asset-pipeline == true {
+            src: font-url('#{$file-path}.eot');
+            src:
+                font-url('#{$file-path}.eot?#iefix') format('embedded-opentype'),
+                font-url('#{$file-path}.woff') format('woff'),
+                font-url('#{$file-path}.ttf') format('truetype'),
+                font-url('#{$file-path}.svg##{$font-family}') format('svg');
+        } @else {
+            src: url('#{$file-path}.eot');
+            src:
+                url('#{$file-path}.eot?#iefix') format('embedded-opentype'),
+                url('#{$file-path}.woff') format('woff'),
+                url('#{$file-path}.ttf') format('truetype'),
+                url('#{$file-path}.svg##{$font-family}') format('svg');
+        }
     }
-  }
 }
-@mixin prefix ( $property, $value... ) {
-  -webkit-#{$property}: $value;
-     -moz-#{$property}: $value;
-      -ms-#{$property}: $value;
-       -o-#{$property}: $value;
-          #{$property}: $value;
+@mixin prefix($property, $value...) {
+    -webkit-#{$property}: $value;
+    -moz-#{$property}: $value;
+    -ms-#{$property}: $value;
+    -o-#{$property}: $value;
+    #{$property}: $value;
 }
-@mixin calc ( $property, $value... ) {
-  #{$property}: -moz-#{$value};
-  #{$property}: -webkit-#{$value};
-  #{$property}: -o-#{$value};
-  #{$property}: #{$value};
+@mixin calc($property, $value...) {
+    #{$property}: -moz-#{$value};
+    #{$property}: -webkit-#{$value};
+    #{$property}: -o-#{$value};
+    #{$property}: #{$value};
 }
-@mixin centered-max-width( $maxW ){
-    width:100%;
+@mixin centered-max-width($maxW) {
+    width: 100%;
     max-width: $maxW;
-    margin:0 auto;
+    margin: 0 auto;
 }
 
 @mixin linear-gradient($angle, $color-stops...) {
-    $_angle-with-vendor-prefix: "";
-    $_angle: "";
-    @if $angle == "to top" or $angle == "bottom" {
-      $_angle-with-vendor-prefix: bottom;
-      $_angle: to top;
-    } @else if $angle == "to right" or $angle == "left" {
-      $_angle-with-vendor-prefix: left;
-      $_angle: to right;
-    } @else if $angle == "to bottom" or $angle == "top" {
-      $_angle-with-vendor-prefix: top;
-      $_angle: to bottom;
-    } @else if $angle == "to left" or $angle == "right" {
-      $_angle-with-vendor-prefix: right;
-      $_angle: to left;
-    } @else if $angle == "to top right" or $angle == "bottom left" {
-      $_angle-with-vendor-prefix: bottom left;
-      $_angle: to top right;
-    } @else if $angle == "to bottom right" or $angle == "top left" {
-      $_angle-with-vendor-prefix: top left;
-      $_angle: to bottom right;
-    } @else if $angle == "to bottom left" or $angle == "top right" {
-      $_angle-with-vendor-prefix: top right;
-      $_angle: to bottom left;
-    } @else if $angle == "to top left" or $angle == "bottom right" {
-      $_angle-with-vendor-prefix: bottom right;
-      $_angle: to top left;
+    $_angle-with-vendor-prefix: '';
+    $_angle: '';
+    @if $angle == 'to top' or $angle == 'bottom' {
+        $_angle-with-vendor-prefix: bottom;
+        $_angle: to top;
+    } @else if $angle == 'to right' or $angle == 'left' {
+        $_angle-with-vendor-prefix: left;
+        $_angle: to right;
+    } @else if $angle == 'to bottom' or $angle == 'top' {
+        $_angle-with-vendor-prefix: top;
+        $_angle: to bottom;
+    } @else if $angle == 'to left' or $angle == 'right' {
+        $_angle-with-vendor-prefix: right;
+        $_angle: to left;
+    } @else if $angle == 'to top right' or $angle == 'bottom left' {
+        $_angle-with-vendor-prefix: bottom left;
+        $_angle: to top right;
+    } @else if $angle == 'to bottom right' or $angle == 'top left' {
+        $_angle-with-vendor-prefix: top left;
+        $_angle: to bottom right;
+    } @else if $angle == 'to bottom left' or $angle == 'top right' {
+        $_angle-with-vendor-prefix: top right;
+        $_angle: to bottom left;
+    } @else if $angle == 'to top left' or $angle == 'bottom right' {
+        $_angle-with-vendor-prefix: bottom right;
+        $_angle: to top left;
     } @else {
-      $_angle-with-vendor-prefix: $angle % 360;
-      $_angle: (90 - $angle) % 360;
+        $_angle-with-vendor-prefix: $angle % 360;
+        $_angle: (90 - $angle) % 360;
     }
     background: -webkit-linear-gradient($_angle-with-vendor-prefix, $color-stops);
     background: -moz-linear-gradient($_angle-with-vendor-prefix, $color-stops);
@@ -75,89 +83,99 @@
     background: linear-gradient($_angle, $color-stops);
 }
 
-@mixin radial-gradient($g1, $g2,
-                       $g3: null, $g4: null,
-                       $g5: null, $g6: null,
-                       $g7: null, $g8: null,
-                       $g9: null, $g10: null,
-                       $pos: null,
-                       $shape-size: null,
-                       $fallback: null) {
+@mixin radial-gradient(
+    $g1,
+    $g2,
+    $g3: null,
+    $g4: null,
+    $g5: null,
+    $g6: null,
+    $g7: null,
+    $g8: null,
+    $g9: null,
+    $g10: null,
+    $pos: null,
+    $shape-size: null,
+    $fallback: null
+) {
+    $data: _radial-arg-parser($g1, $g2, $pos, $shape-size);
+    $g1: nth($data, 1);
+    $g2: nth($data, 2);
+    $pos: nth($data, 3);
+    $shape-size: nth($data, 4);
 
-  $data: _radial-arg-parser($g1, $g2, $pos, $shape-size);
-  $g1:  nth($data, 1);
-  $g2:  nth($data, 2);
-  $pos: nth($data, 3);
-  $shape-size: nth($data, 4);
+    $full: $g1, $g2, $g3, $g4, $g5, $g6, $g7, $g8, $g9, $g10;
 
-  $full: $g1, $g2, $g3, $g4, $g5, $g6, $g7, $g8, $g9, $g10;
+    // Strip deprecated cover/contain for spec
+    $shape-size-spec: _shape-size-stripper($shape-size);
 
-  // Strip deprecated cover/contain for spec
-  $shape-size-spec: _shape-size-stripper($shape-size);
+    // Set $g1 as the default fallback color
+    $first-color: nth($full, 1);
+    $fallback-color: nth($first-color, 1);
 
-  // Set $g1 as the default fallback color
-  $first-color: nth($full, 1);
-  $fallback-color: nth($first-color, 1);
+    @if (type-of($fallback) == color) or ($fallback == 'transparent') {
+        $fallback-color: $fallback;
+    }
 
-  @if (type-of($fallback) == color) or ($fallback == "transparent") {
-    $fallback-color: $fallback;
-  }
+    // Add Commas and spaces
+    $shape-size: if($shape-size, '#{$shape-size}, ', null);
+    $pos: if($pos, '#{$pos}, ', null);
+    $pos-spec: if($pos, 'at #{$pos}', null);
+    $shape-size-spec: if(
+        ($shape-size-spec != ' ') and ($pos == null),
+        '#{$shape-size-spec}, ',
+        '#{$shape-size-spec} '
+    );
 
-  // Add Commas and spaces
-  $shape-size: if($shape-size, "#{$shape-size}, ", null);
-  $pos:        if($pos, "#{$pos}, ", null);
-  $pos-spec:   if($pos, "at #{$pos}", null);
-  $shape-size-spec: if(($shape-size-spec != " ") and ($pos == null), "#{$shape-size-spec}, ", "#{$shape-size-spec} ");
-
-  background-color:  $fallback-color;
-  background-image: -webkit-radial-gradient(unquote(#{$pos}#{$shape-size}#{$full}));
-  background-image: unquote("radial-gradient(#{$shape-size-spec}#{$pos-spec}#{$full})");
+    background-color: $fallback-color;
+    background-image: -webkit-radial-gradient(unquote(#{$pos}#{$shape-size}#{$full}));
+    background-image: unquote('radial-gradient(#{$shape-size-spec}#{$pos-spec}#{$full})');
 }
 @mixin placeholder {
-  $placeholders: ":-webkit-input" ":-moz" "-moz" "-ms-input";
-  @each $placeholder in $placeholders {
-    &:#{$placeholder}-placeholder {
-      @content;
+    $placeholders: ':-webkit-input' ':-moz' '-moz' '-ms-input';
+    @each $placeholder in $placeholders {
+        &:#{$placeholder}-placeholder {
+            @content;
+        }
     }
-  }
 }
-@mixin keyframe ($animation_name) {
+@mixin keyframe($animation_name) {
     @-webkit-keyframes $animation_name {
         @content;
     }
- 
+
     @-moz-keyframes $animation_name {
         @content;
     }
- 
+
     @-o-keyframes $animation_name {
         @content;
     }
- 
+
     @keyframes $animation_name {
         @content;
     }
 }
 
 @mixin borderBox {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box; 
-  -webkit-box-sizing: border-box; 
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 @mixin contentBox {
-  box-sizing: content-box;
-  -moz-box-sizing: content-box; 
-  -webkit-box-sizing: content-box; 
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
 }
 
 @mixin centerAbsV {
-  top: 50%;
-  position: absolute;
-  @include prefix (transform, translateY(-50%));
+    top: 50%;
+    position: absolute;
+    @include prefix(transform, translateY(-50%));
 }
 @mixin centerAbsH {
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
 }

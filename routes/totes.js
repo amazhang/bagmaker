@@ -12,9 +12,11 @@ router.get('/newtote', function (req, res) {
 router.post('/createtote', async function (req, res) {
     try {
         // "Enter Sesame" admin escape hatch — original 2015 behavior preserved.
-        if (req.body.textfields &&
+        if (
+            req.body.textfields &&
             req.body.textfields.length === 1 &&
-            req.body.textfields[0].text === 'Enter Sesame') {
+            req.body.textfields[0].text === 'Enter Sesame'
+        ) {
             return res.send({ res: 'Success' });
         }
 

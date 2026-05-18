@@ -1,196 +1,196 @@
-button{
+button {
     position: fixed;
     z-index: $z-second-level;
 
-    &.close{
+    &.close {
         top: $body-padding;
         left: $body-padding;
     }
-    &.save{
+    &.save {
         top: $body-padding;
         right: $body-padding;
         background-color: $fadedRed;
         color: #fff;
     }
-
 }
 
 @media screen and (max-width: $medBP) {
-    body button{
-        &.close{
+    body button {
+        &.close {
             top: $body-padding-sml;
             left: $body-padding-sml;
             width: $button-size-sml;
 
-            span{
+            span {
                 display: none;
             }
 
-            &:before, &:after{
-                content: "";
+            &:before,
+            &:after {
+                content: '';
                 position: absolute;
                 @include centerAbsH;
                 @include centerAbsV;
                 background-color: $button-text;
-                @include prefix (border-radius, 2px);
-                @include prefix (transform, translateY(-50%) rotate(45deg));
+                @include prefix(border-radius, 2px);
+                @include prefix(transform, translateY(-50%) rotate(45deg));
             }
 
-            &:before{
+            &:before {
                 width: 3px;
                 height: 50%;
             }
 
-            &:after{
+            &:after {
                 height: 3px;
                 width: 50%;
             }
         }
-        &.save{
+        &.save {
             top: $body-padding-sml;
             right: $body-padding-sml;
             width: $button-size-sml;
 
-            span{
+            span {
                 display: none;
             }
 
-            &:after{
-                content: "";
+            &:after {
+                content: '';
                 position: absolute;
                 @include centerAbsV;
                 @include centerAbsH;
                 width: 50%;
                 height: 50%;
-                background: url("/images/check-white.svg") center center no-repeat;
+                background: url('/images/check-white.svg') center center no-repeat;
                 background-size: contain;
             }
         }
     }
     body .content.create-page {
-        .bottom-bar{
+        .bottom-bar {
             height: $body-padding-sml * 2 + $button-size-sml;
 
-            .addTextfield{
+            .addTextfield {
                 left: $body-padding-sml;
             }
         }
-        
-        .tote-wrap .actual-tote .bag-body .editable-field{
-            &.selected, &.selected:hover{
-                .corner:not(.tr){
-                    @include prefix (transform, scale(0.5));
 
+        .tote-wrap .actual-tote .bag-body .editable-field {
+            &.selected,
+            &.selected:hover {
+                .corner:not(.tr) {
+                    @include prefix(transform, scale(0.5));
                 }
             }
         }
 
-        .color-control-wrap{
+        .color-control-wrap {
             width: $button-size-sml;
             height: $button-size-sml;
             right: $body-padding-sml;
 
-            &.expand{
+            &.expand {
                 height: ($button-size-sml + 15px) * 2 + $button-size-sml;
-                
-                .colors{
-                    @include prefix (transform, translateY(-#{$button-size-sml + 15px}));
-                    
-                    .color{
+
+                .colors {
+                    @include prefix(transform, translateY(-#{$button-size-sml + 15px}));
+
+                    .color {
                         width: $button-size-sml;
                         height: $button-size-sml;
 
-                        &[rel=red]{
-                            @include prefix (transition, 0.3s 0.2s $easing-curve);
+                        &[rel='red'] {
+                            @include prefix(transition, 0.3s 0.2s $easing-curve);
                         }
-                        &[rel=black]{
-                            @include prefix (transition, 0.3s 0.15s $easing-curve);
+                        &[rel='black'] {
+                            @include prefix(transition, 0.3s 0.15s $easing-curve);
                         }
-                        &[rel=white]{
-                            @include prefix (transition, 0.3s 0.1s $easing-curve);
+                        &[rel='white'] {
+                            @include prefix(transition, 0.3s 0.1s $easing-curve);
                         }
                     }
                 }
-                .color-control{
-                    @include prefix (transform, scale(0.5));
+                .color-control {
+                    @include prefix(transform, scale(0.5));
                     background-color: #000;
 
-                    &:before{
+                    &:before {
                         opacity: 0;
                     }
-                    &:after{
+                    &:after {
                         opacity: 1;
                     }
 
-                    &:hover{
-                        @include prefix (transform, scale(0.65));
+                    &:hover {
+                        @include prefix(transform, scale(0.65));
                     }
                 }
             }
 
-            button.color-control{
+            button.color-control {
                 display: block;
             }
 
             .colors {
                 height: 100%;
 
-                .color{
+                .color {
                     width: $button-size * 0.25;
                     height: $button-size * 0.25;
                     @include centerAbsH;
 
-                    &[rel=red]{
+                    &[rel='red'] {
                         top: 0;
                     }
-                    &[rel=black]{
+                    &[rel='black'] {
                         bottom: 0;
                     }
-                    &[rel=white]{
-                        @include prefix (transform, translateY(-50%));
+                    &[rel='white'] {
+                        @include prefix(transform, translateY(-50%));
                         top: 50%;
                     }
                 }
             }
         }
-        .addTextfield{
+        .addTextfield {
             margin-top: -$button-size-sml * 0.5;
         }
-        .bag-size-wrap{
+        .bag-size-wrap {
             margin-top: -$button-size-sml * 0.5;
             width: 120px;
-            
-            &:after{
+
+            &:after {
                 line-height: $button-size-sml !important;
                 font-size: 12px;
                 letter-spacing: 0.08em;
             }
 
-            &.small:after{
-                content: "Bigger."
+            &.small:after {
+                content: 'Bigger.';
             }
-            &.big:after{
-                content: "Smaller."
+            &.big:after {
+                content: 'Smaller.';
             }
         }
     }
 }
 
-.content-wrap{
+.content-wrap {
     position: relative;
     height: 100vh;
     width: 100%;
     overflow: auto;
 }
 
-.content.create-page{
+.content.create-page {
     position: absolute;
     top: 0;
     left: 0;
     min-height: 100vh;
     background-color: $lightestGrey;
 
-    .tote-wrap{
+    .tote-wrap {
         max-width: 80vw;
         width: 800px;
         margin: 0 auto;
@@ -199,16 +199,16 @@ button{
             // color: #000;
         }
 
-        .actual-tote{
+        .actual-tote {
             padding-bottom: $navHeight * 1.5;
-            
-            .handle{
-                &:before{
+
+            .handle {
+                &:before {
                     background-color: $lightestGrey;
                 }
             }
-            .bag-body{
-                .editable-field{
+            .bag-body {
+                .editable-field {
                     position: absolute;
                     max-height: 100%;
                     cursor: move;
@@ -218,162 +218,170 @@ button{
                     left: 0;
                     z-index: $z-first-level;
 
-                    &.selected, &.selected:hover{
+                    &.selected,
+                    &.selected:hover {
                         z-index: $z-third-level;
 
-                        .border{
+                        .border {
                             border: 1px dashed rgba(200, 200, 200, 1);
                         }
 
-                        .corner{
+                        .corner {
                             width: 20px;
                             height: 20px;
 
-                            &.tr{
+                            &.tr {
                                 width: 30px;
                                 height: 30px;
                                 top: -15px;
                                 right: -15px;
                                 @include linear-gradient(top, $red, #cd173a);
                             }
-                            &.tl{
+                            &.tl {
                                 top: -10px;
                                 left: -10px;
                             }
-                            &.bl{
+                            &.bl {
                                 bottom: -10px;
                                 left: -10px;
                             }
-                            &.br{
+                            &.br {
                                 bottom: -10px;
                                 right: -10px;
                             }
                         }
-                        .text-controls{
+                        .text-controls {
                             opacity: 1;
                             pointer-events: auto;
-                            @include prefix (transform, translate3d(-50%, 0, 0));
+                            @include prefix(transform, translate3d(-50%, 0, 0));
                             margin-bottom: $navHeight + 20px;
                         }
                     }
 
-                    &:hover{
-                        .border{
+                    &:hover {
+                        .border {
                             border: 1px dashed rgba(200, 200, 200, 0.3);
                         }
-                        .corner{
+                        .corner {
                             width: 5px;
                             height: 5px;
 
-                            &.tr{
+                            &.tr {
                                 top: -2.5px;
                                 right: -2.5px;
                                 @include linear-gradient(top, #fafafa, #efefef);
                             }
-                            &.tl{
+                            &.tl {
                                 top: -2.5px;
                                 left: -2.5px;
                             }
-                            &.bl{
+                            &.bl {
                                 bottom: -2.5px;
                                 left: -2.5px;
                             }
-                            &.br{
+                            &.br {
                                 bottom: -2.5px;
                                 right: -2.5px;
                             }
                         }
                     }
 
-                    &.strikethrough{
-                        .clone-text-wrap{
+                    &.strikethrough {
+                        .clone-text-wrap {
                             z-index: $z-first-level;
                             text-decoration: line-through;
                             color: $magenta;
                         }
                     }
 
-                    .border{
+                    .border {
                         width: 100%;
                         height: 100%;
                         position: absolute;
                         top: 0;
                         left: 0;
                         border: 1px dashed transparent;
-                        @include prefix (transition, 0.3s $easing-curve);
+                        @include prefix(transition, 0.3s $easing-curve);
                     }
-                    .corner{
+                    .corner {
                         width: 0;
                         height: 0;
                         overflow: hidden;
-                        @include prefix (border-radius, 50%);
+                        @include prefix(border-radius, 50%);
                         @include linear-gradient(top, #fafafa, #efefef);
-                        @include prefix (box-shadow, 0px 2px 4px 0px rgba(0,0,0,0.50));
+                        @include prefix(box-shadow, 0px 2px 4px 0px rgba(0, 0, 0, 0.5));
                         cursor: move;
                         cursor: -webkit-grab;
                         cursor: -moz-grab;
                         position: absolute;
                         z-index: $z-first-level;
-                        @include prefix (transition, 0.3s $easing-curve);
-                        @include prefix (transition-property, width, height, top, left, bottom, right);
+                        @include prefix(transition, 0.3s $easing-curve);
+                        @include prefix(
+                            transition-property,
+                            width,
+                            height,
+                            top,
+                            left,
+                            bottom,
+                            right
+                        );
 
-                        &.tr{
+                        &.tr {
                             top: 0;
                             right: 0;
                             @include linear-gradient(top, $red, #cd173a);
                             cursor: pointer;
 
-                            &:after{
-                                content: "";
-                                
+                            &:after {
+                                content: '';
+
                                 width: 40%;
                                 height: 40%;
                                 @include centerAbsV;
                                 @include centerAbsH;
 
                                 z-index: $z-first-level;
-                                background: url("/images/x-close-white.svg") center center no-repeat;
+                                background: url('/images/x-close-white.svg') center center no-repeat;
                                 background-size: contain;
                             }
                         }
-                        &.tl{
+                        &.tl {
                             top: 0;
                             left: 0;
                         }
-                        &.bl{
+                        &.bl {
                             bottom: 0;
                             left: 0;
                         }
-                        &.br{
+                        &.br {
                             bottom: 0;
                             right: 0;
                         }
                     }
                 }
                 // text controls, :after is tooltip arrow
-                .text-controls{
+                .text-controls {
                     background-color: rgba(45, 45, 45, 0.95);
                     width: 220px;
                     padding: 15px 25px;
                     opacity: 0;
                     pointer-events: none;
-                    @include prefix (transition, 0.5s $easing-curve);
+                    @include prefix(transition, 0.5s $easing-curve);
 
                     //centered below:
                     position: absolute;
                     left: 50%;
-                    @include prefix (transform, translate3d(-50%, -50px, 0));
-                    @include calc (top, calc(100% + 25px));
-                    
+                    @include prefix(transform, translate3d(-50%, -50px, 0));
+                    @include calc(top, calc(100% + 25px));
+
                     //centered right:
                     // @include prefix (transform, translateY(-50px));
                     // left: 120%;
                     // @include centerAbsV;
-                    
 
                     &:after {
                         border: solid transparent;
-                        content: "";
+                        content: '';
                         height: 0;
                         width: 0;
                         pointer-events: none;
@@ -390,27 +398,28 @@ button{
                         // right: 100%;
                     }
 
-                    .top-controls{
+                    .top-controls {
                         width: 100%;
                         height: 40px;
 
-                        .justification *:not(.sel), .strikethrough:not(.sel){
+                        .justification *:not(.sel),
+                        .strikethrough:not(.sel) {
                             opacity: 0.7;
-                            @include prefix (transition, 0.3s $easing-curve);
-                            @include prefix (transition-property, opacity);
+                            @include prefix(transition, 0.3s $easing-curve);
+                            @include prefix(transition-property, opacity);
 
-                            &:hover{
+                            &:hover {
                                 opacity: 1;
                             }
                         }
 
-                        .justification{
+                        .justification {
                             width: 75%;
                             height: 100%;
                             float: left;
                             display: inline-block;
 
-                            *:not(.clearfix){
+                            *:not(.clearfix) {
                                 width: 33.33%;
                                 height: 100%;
                                 float: left;
@@ -418,52 +427,55 @@ button{
                                 height: 100%;
                                 cursor: pointer;
                             }
-                            .justify-left{
-                                background: url("/images/aligned-left-white.svg") no-repeat left center;
-                                &.sel{
-                                    background-image: url("/images/aligned-left-blue.svg");
+                            .justify-left {
+                                background: url('/images/aligned-left-white.svg') no-repeat left
+                                    center;
+                                &.sel {
+                                    background-image: url('/images/aligned-left-blue.svg');
                                 }
                             }
-                            .justify-center{
-                                background: url("/images/aligned-center-white.svg") no-repeat left center;
-                                &.sel{
-                                    background-image: url("/images/aligned-center-blue.svg");
+                            .justify-center {
+                                background: url('/images/aligned-center-white.svg') no-repeat left
+                                    center;
+                                &.sel {
+                                    background-image: url('/images/aligned-center-blue.svg');
                                 }
                             }
-                            .justify-right{
-                                background: url("/images/aligned-right-white.svg") no-repeat left center ;
+                            .justify-right {
+                                background: url('/images/aligned-right-white.svg') no-repeat left
+                                    center;
                                 border-right: 1px dotted rgba(255, 255, 255, 0.2);
-                                &.sel{
-                                    background-image: url("/images/aligned-right-blue.svg");
+                                &.sel {
+                                    background-image: url('/images/aligned-right-blue.svg');
                                 }
                             }
                         }
-                        .strikethrough{
+                        .strikethrough {
                             width: 25%;
                             height: 100%;
                             display: inline-block;
                             float: left;
-                            background: url("/images/strikethrough-white.svg") no-repeat center right;
+                            background: url('/images/strikethrough-white.svg') no-repeat center
+                                right;
                             background-size: 22px 22px;
                             cursor: pointer;
 
-                            &.sel{
-                                background-image: url("/images/strikethrough-blue.svg");
+                            &.sel {
+                                background-image: url('/images/strikethrough-blue.svg');
                             }
                         }
-
                     }
-                    .type-control-wrap{
-                        .type-control{
+                    .type-control-wrap {
+                        .type-control {
                             width: 100%;
                             height: 30px;
                             margin: 10px 0;
 
-                            *{
-                                float:left;
+                            * {
+                                float: left;
                             }
-                            
-                            .icon{
+
+                            .icon {
                                 height: 100%;
                                 width: 30px;
                                 background-position: center center;
@@ -471,26 +483,26 @@ button{
                                 background-size: contain;
                             }
 
-                            input[type=range]{
+                            input[type='range'] {
                                 width: 120px;
                                 margin-left: 15px;
                                 margin-right: 0;
-                                @include prefix (transform, translateY(5px));
+                                @include prefix(transform, translateY(5px));
                             }
 
-                            &.size .icon{
-                                background-image: url("/images/typesize.svg");
+                            &.size .icon {
+                                background-image: url('/images/typesize.svg');
                             }
-                            &.kerning .icon{
-                                background-image: url("/images/kerning.svg");
+                            &.kerning .icon {
+                                background-image: url('/images/kerning.svg');
                             }
-                            &.leading .icon{
-                                background-image: url("/images/leading.svg");
+                            &.leading .icon {
+                                background-image: url('/images/leading.svg');
                             }
                         }
                     }
                 }
-                textarea{
+                textarea {
                     position: absolute;
                     background: transparent;
                     resize: none;
@@ -510,9 +522,8 @@ button{
                     left: 0;
                     text-align: inherit;
 
-                    @include prefix (touch-callout, none);
-                    @include prefix (user-select, auto);
-
+                    @include prefix(touch-callout, none);
+                    @include prefix(user-select, auto);
 
                     cursor: move;
                     cursor: -webkit-grab;
@@ -523,18 +534,19 @@ button{
                         color: rgba(205, 205, 205, 0.5);
                     }
                 }
-                .clone-text-wrap{
+                .clone-text-wrap {
                     pointer-events: none;
                     position: relative;
 
-                    .clone-text{
+                    .clone-text {
                         color: transparent;
                         word-wrap: break-word;
                     }
                 }
             }
-            .bag-bottom{
-                .bl-corner, .br-corner{
+            .bag-bottom {
+                .bl-corner,
+                .br-corner {
                     border-left-color: $lightestGrey;
                     border-bottom-color: $lightestGrey;
                 }
@@ -543,155 +555,169 @@ button{
     }
 
     // keep for when we want to make a bottom tool bar
-    .bottom-bar{
+    .bottom-bar {
         width: 100%;
         height: $body-padding-sml * 2 + $button-size;
-       
+
         //border-top: 1px solid $stroke-color;
         background-color: rgba(248, 248, 248, 0.9);
-       
+
         position: fixed;
         z-index: $z-third-level;
         bottom: 0;
         left: 0;
     }
 
-    .color-control-wrap{
-        @include prefix (transition, 0.3s $easing-curve); 
+    .color-control-wrap {
+        @include prefix(transition, 0.3s $easing-curve);
         text-align: right;
         position: absolute;
         bottom: $body-padding-sml;
-        right: $body-padding;      
+        right: $body-padding;
     }
 
-    .color-control{
+    .color-control {
         display: none;
         bottom: 0;
         left: 0;
         position: absolute;
         background-color: #fff;
-        @include prefix (transition, 0.3s $easing-curve);
+        @include prefix(transition, 0.3s $easing-curve);
 
-        &:before, &:after{
-            content: "";
+        &:before,
+        &:after {
+            content: '';
             @include centerAbsH;
             @include centerAbsV;
             width: 100%;
             height: 100%;
-            @include prefix (border-radius, 50%);
-            @include prefix (transition, 0.15s $easing-curve);
+            @include prefix(border-radius, 50%);
+            @include prefix(transition, 0.15s $easing-curve);
         }
 
-        &:before{
-            background: url("/images/tri-color-wheel.svg") center center no-repeat;
+        &:before {
+            background: url('/images/tri-color-wheel.svg') center center no-repeat;
             background-size: 35px 35px;
         }
-        &:after{
-            background: url("/images/x-close-white.svg") center center no-repeat;
+        &:after {
+            background: url('/images/x-close-white.svg') center center no-repeat;
             opacity: 0;
             width: 50%;
             height: 50%;
         }
     }
-    .colors{
-        @include prefix (transition, 0.3s $easing-curve);
-        
-        .color{
+    .colors {
+        @include prefix(transition, 0.3s $easing-curve);
+
+        .color {
             width: $button-size;
             height: $button-size;
             display: inline-block;
             margin-left: $body-padding-sml;
-            @include prefix (border-radius, 50%);
-            @include prefix (transition, 0.15s $easing-curve);
+            @include prefix(border-radius, 50%);
+            @include prefix(transition, 0.15s $easing-curve);
             cursor: pointer;
-            @include prefix (box-shadow, inset 0 0 0 0px rgba(210,209,209, .4), 0 0 2px 0px rgba(1,1,1,.1), 0 2px 10px 0px rgba(1,1,1,.15));
+            @include prefix(
+                box-shadow,
+                inset 0 0 0 0px rgba(210, 209, 209, 0.4),
+                0 0 2px 0px rgba(1, 1, 1, 0.1),
+                0 2px 10px 0px rgba(1, 1, 1, 0.15)
+            );
             position: relative;
             opacity: 0.8;
 
-            &:hover{
-                @include prefix (box-shadow, inset 0 0 0 0px rgba(210,209,209, .4), 0 0 2px 0px rgba(1,1,1,.1), 0 2px 10px 0px rgba(1,1,1,.4));
+            &:hover {
+                @include prefix(
+                    box-shadow,
+                    inset 0 0 0 0px rgba(210, 209, 209, 0.4),
+                    0 0 2px 0px rgba(1, 1, 1, 0.1),
+                    0 2px 10px 0px rgba(1, 1, 1, 0.4)
+                );
                 opacity: 1;
             }
 
-            &.selected{
-                &[rel=red], &[rel=black], &[rel=white]{
+            &.selected {
+                &[rel='red'],
+                &[rel='black'],
+                &[rel='white'] {
                     background-color: #fff;
-                    border: 2px solid rgba(0,0,0,0.3);
+                    border: 2px solid rgba(0, 0, 0, 0.3);
                     opacity: 1;
                 }
             }
 
-            &[rel=red]{
+            &[rel='red'] {
                 background-color: $red;
 
-                .color-wrap{
+                .color-wrap {
                     background-color: $red;
                 }
             }
-            &[rel=black]{
+            &[rel='black'] {
                 background-color: #000;
 
-                .color-wrap{
+                .color-wrap {
                     background-color: #000;
                 }
             }
-            &[rel=white]{
+            &[rel='white'] {
                 background-color: #fff;
-                border: 1px solid rgba(0,0,0,0.3);
+                border: 1px solid rgba(0, 0, 0, 0.3);
 
-                .color-wrap{
+                .color-wrap {
                     background-color: #fff;
                 }
             }
-            .color-wrap{
-                @include prefix (transition, 0.3s $easing-curve);
+            .color-wrap {
+                @include prefix(transition, 0.3s $easing-curve);
                 width: 80%;
                 height: 80%;
                 @include centerAbsH;
                 @include centerAbsV;
-                @include prefix (border-radius, 50%);
+                @include prefix(border-radius, 50%);
             }
         }
     }
 
-    .addTextfield{
+    .addTextfield {
         position: absolute;
         top: 50%;
         margin-top: -$button-size * 0.5;
         left: $body-padding;
 
-        &:before, &:after{
-            content: "";
+        &:before,
+        &:after {
+            content: '';
             position: absolute;
             @include centerAbsH;
             @include centerAbsV;
             background-color: $button-text;
-            @include prefix (border-radius, 2px);
+            @include prefix(border-radius, 2px);
         }
 
-        &:before{
+        &:before {
             width: 3px;
             height: 40%;
         }
 
-        &:after{
+        &:after {
             height: 3px;
             width: 40%;
         }
 
-        &.disabled{
+        &.disabled {
             background-color: $lightGrey;
             cursor: auto;
         }
     }
 
-    .bag-size-wrap{
+    .bag-size-wrap {
         @include centerAbsH;
         top: 50%;
         margin-top: -$button-size * 0.5;
         width: 200px;
 
-        &:after{
+        &:after {
             line-height: $button-size;
             text-align: center;
             text-transform: uppercase;
@@ -701,8 +727,8 @@ button{
             color: $button-text;
         }
 
-        &:before{
-            content: "";
+        &:before {
+            content: '';
             width: 100%;
             height: 100%;
             background-color: #fff;
@@ -710,11 +736,11 @@ button{
             position: absolute;
             top: 0;
             left: 0;
-            @include prefix (border-radius, #{$button-size * 0.5} );
-            @include prefix (transition, 0.3s $easing-curve);
+            @include prefix(border-radius, #{$button-size * 0.5});
+            @include prefix(transition, 0.3s $easing-curve);
         }
-        
-        .selector{
+
+        .selector {
             width: $button-size;
             height: $button-size;
             position: absolute;
@@ -722,45 +748,45 @@ button{
             left: 0;
             background-color: #fff;
             border: 1px solid $grey;
-            @include prefix (border-radius, 50%);
-            @include prefix (box-shadow, 0 3px 6px 2px rgba(0,0,0,0.15));
+            @include prefix(border-radius, 50%);
+            @include prefix(box-shadow, 0 3px 6px 2px rgba(0, 0, 0, 0.15));
             cursor: move;
             cursor: -webkit-grab;
             cursor: -moz-grab;
             z-index: $z-second-level;
             // @include prefix (transition, 0.3s $easing-curve);
 
-            &:hover{
+            &:hover {
                 // @include prefix (transform, scale(1.1));
-                @include prefix (box-shadow, 0 4px 6px 3px rgba(0,0,0,0.2));
+                @include prefix(box-shadow, 0 4px 6px 3px rgba(0, 0, 0, 0.2));
                 // background-color: $lightestGrey;
             }
         }
 
-        &.small{
-            &:after{
-                content: "Make it bigger."
+        &.small {
+            &:after {
+                content: 'Make it bigger.';
             }
-            &:before{
+            &:before {
                 opacity: 0;
             }
-            .icon.small-bag{
+            .icon.small-bag {
                 opacity: 0.5;
             }
         }
-        &.big{
-            &:after{
-                content: "Make it smaller."
+        &.big {
+            &:after {
+                content: 'Make it smaller.';
             }
-            &:before{
+            &:before {
                 opacity: 0;
             }
-            .icon.big-bag{
+            .icon.big-bag {
                 opacity: 0.5;
             }
         }
 
-        .icon{
+        .icon {
             width: 50%;
             height: $button-size;
             display: inline-block;
@@ -769,15 +795,16 @@ button{
 
             background-position: center center;
             background-repeat: no-repeat;
-            background-image: url("/images/small-bag-icon.svg");
+            background-image: url('/images/small-bag-icon.svg');
             background-size: ($button-size - 15px) (($button-size - 15px) * 0.5);
             opacity: 0.3;
             position: relative;
             cursor: pointer;
-            @include prefix (transition, 0s 0.4s $easing-curve);
+            @include prefix(transition, 0s 0.4s $easing-curve);
 
-            &:before, &:after{
-                content: "";
+            &:before,
+            &:after {
+                content: '';
                 @include centerAbsV;
                 background-size: contain;
                 width: 10px;
@@ -785,23 +812,23 @@ button{
                 background-repeat: no-repeat;
                 background-position: center center;
             }
-            &.small-bag{
-                &:before{
-                    background-image: url("/images/arrow-right.svg");
+            &.small-bag {
+                &:before {
+                    background-image: url('/images/arrow-right.svg');
                     right: 6px;
                 }
-                &:after{
-                    background-image: url("/images/arrow-left.svg");
+                &:after {
+                    background-image: url('/images/arrow-left.svg');
                     left: 6px;
                 }
             }
-            &.big-bag{
-                &:after{
-                    background-image: url("/images/arrow-right.svg");
+            &.big-bag {
+                &:after {
+                    background-image: url('/images/arrow-right.svg');
                     left: 6px;
                 }
-                &:before{
-                    background-image: url("/images/arrow-left.svg");
+                &:before {
+                    background-image: url('/images/arrow-left.svg');
                     right: 6px;
                 }
             }

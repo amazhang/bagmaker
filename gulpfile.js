@@ -14,7 +14,8 @@ const del = require('del');
 
 // ---- styles -------------------------------------------------------------
 function styles() {
-    return gulp.src('public/stylesheets/scss/style.scss')
+    return gulp
+        .src('public/stylesheets/scss/style.scss')
         .pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
         .pipe(autoprefixer())
         .pipe(gulp.dest('public/stylesheets/'))
@@ -25,7 +26,8 @@ function styles() {
 
 // ---- scripts ------------------------------------------------------------
 function scripts() {
-    return gulp.src('public/javascripts/*.js')
+    return gulp
+        .src('public/javascripts/*.js')
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
         .pipe(gulp.dest('public/javascripts/min/'));

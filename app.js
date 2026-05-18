@@ -14,36 +14,41 @@ const mongoose = require('mongoose');
 const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bagmaker';
 
 mongoose
-  .connect(mongoUri)
-  .then(() => console.log('[mongo] connected to', mongoUri.replace(/\/\/[^@]+@/, '//<creds>@')))
-  .catch((err) => {
-    console.error('[mongo] connection error:', err.message);
-    // Don't crash — let the app boot so health checks pass; routes will error
-    // until the DB is reachable.
-  });
+    .connect(mongoUri)
+    .then(() => console.log('[mongo] connected to', mongoUri.replace(/\/\/[^@]+@/, '//<creds>@')))
+    .catch((err) => {
+        console.error('[mongo] connection error:', err.message);
+        // Don't crash — let the app boot so health checks pass; routes will error
+        // until the DB is reachable.
+    });
 
 // ---- Mongoose model -----------------------------------------------------
 // Registered here so it's available to any router that does
 // mongoose.model('Totebag') later.
-const Totebag = mongoose.model('Totebag', new mongoose.Schema({
-    color: String,
-    likes: { type: [Number], index: true },
-    views: Number,
-    size: String,
-    timestamp: { type: [Date], index: true },
-    textfields: [{
-        text: String,
-        x: Number,
-        y: Number,
-        domid: String,
-        leading: Number,
-        kerning: Number,
-        fontSize: Number,
-        justify: String,
-        strikethrough: String,
-        width: String
-    }]
-}));
+const Totebag = mongoose.model(
+    'Totebag',
+    new mongoose.Schema({
+        color: String,
+        likes: { type: [Number], index: true },
+        views: Number,
+        size: String,
+        timestamp: { type: [Date], index: true },
+        textfields: [
+            {
+                text: String,
+                x: Number,
+                y: Number,
+                domid: String,
+                leading: Number,
+                kerning: Number,
+                fontSize: Number,
+                justify: String,
+                strikethrough: String,
+                width: String
+            }
+        ]
+    })
+);
 
 Totebag.schema.path('color').validate(function (value) {
     return /red|black|white/i.test(value);

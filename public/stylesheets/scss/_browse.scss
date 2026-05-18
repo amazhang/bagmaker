@@ -1,4 +1,5 @@
-.browse-tote-wrap, .content.browse-page{
+.browse-tote-wrap,
+.content.browse-page {
     background-color: $lightestGrey;
 }
 
@@ -7,8 +8,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,18 +30,17 @@
         font-weight: 400;
         color: $darkGrey;
         margin: 0 0 12px 0;
-        letter-spacing: 0.02em;
     }
 
     .empty-state-msg {
         font-size: 14px;
         color: $button-text;
         margin: 0 0 32px 0;
-        letter-spacing: 0.05em;
     }
 
     .create {
-        display: inline-block;
+        display: flex;
+
         button.text {
             background-color: $fadedRed;
             color: #fff;
@@ -52,8 +52,8 @@
             font-size: 13px;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            @include prefix (border-radius, #{$button-size * 0.5});
-            @include prefix (transition, 0.2s $easing-curve);
+            @include prefix(border-radius, #{$button-size * 0.5});
+            @include prefix(transition, 0.2s $easing-curve);
 
             &:hover {
                 opacity: 0.9;
@@ -62,77 +62,81 @@
     }
 }
 
-.tote-grid-element{
+.tote-grid-element {
     &.red button.heart-outer-wrap {
-        .heart-wrap .heart .inner-heart{
-            &:after, &:before{
+        .heart-wrap .heart .inner-heart {
+            &:after,
+            &:before {
                 background-color: $darkGrey;
             }
         }
 
-        svg path{
-            @include prefix (fill, rgba(60, 60, 60, 1));
+        svg path {
+            @include prefix(fill, rgba(60, 60, 60, 1));
         }
     }
     &.white button.heart-outer-wrap {
-        .heart-wrap .heart .inner-heart{
-            &:after, &:before{
+        .heart-wrap .heart .inner-heart {
+            &:after,
+            &:before {
                 background-color: $fadedRed;
             }
         }
 
-        svg path{
-            @include prefix (fill, rgba(254, 67, 68, 1));
+        svg path {
+            @include prefix(fill, rgba(254, 67, 68, 1));
         }
 
-        &.favorited{
-            background-color: rgba(255,255,255,0.5);
-            .heart-wrap .heart-circle{
-                @include calc (width, calc(100% - 4px));
-                @include calc (height, calc(100% - 4px));
+        &.favorited {
+            background-color: rgba(255, 255, 255, 0.5);
+            .heart-wrap .heart-circle {
+                @include calc(width, calc(100% - 4px));
+                @include calc(height, calc(100% - 4px));
             }
         }
     }
     &.black button.heart-outer-wrap {
-        .heart-wrap .heart .inner-heart{
-            &:after, &:before{
+        .heart-wrap .heart .inner-heart {
+            &:after,
+            &:before {
                 background-color: $grey;
             }
         }
-        
-        svg path{
-            @include prefix (fill, rgba(26, 25, 25, .2));
+
+        svg path {
+            @include prefix(fill, rgba(26, 25, 25, 0.2));
         }
     }
 }
 
-button.heart-outer-wrap{
+button.heart-outer-wrap {
     padding: 0;
 
-    &:hover{    
+    &:hover {
         opacity: 1;
     }
 
-    &.favorited{
-        .heart-wrap{
+    &.favorited {
+        .heart-wrap {
             // background-color: $fadedRed;
 
             .heart {
-                @include prefix (transform, scale(1.2));
+                @include prefix(transform, scale(1.2));
 
-                .inner-heart{
-                    &:after, &:before{
+                .inner-heart {
+                    &:after,
+                    &:before {
                         background-color: #fff !important;
-                        @include prefix (transition, 0.3s 0.2s $easing-curve);
+                        @include prefix(transition, 0.3s 0.2s $easing-curve);
                     }
                 }
 
-                svg path{
-                    fill: rgba(255,255,255,1);
+                svg path {
+                    fill: rgba(255, 255, 255, 1);
                 }
             }
 
-            .heart-circle{
+            .heart-circle {
                 width: 100%;
                 height: 100%;
                 opacity: 1;
@@ -140,53 +144,56 @@ button.heart-outer-wrap{
         }
     }
 
-    &.white{
-        .heart-wrap .heart .inner-heart{
-            &:after, &:before{
+    &.white {
+        .heart-wrap .heart .inner-heart {
+            &:after,
+            &:before {
                 background-color: $fadedRed;
             }
         }
-        &.favorited{
-            background-color: rgba(255,255,255,0.5);
+        &.favorited {
+            background-color: rgba(255, 255, 255, 0.5);
 
-            .heart-wrap .heart-circle{
-                @include calc (width, calc(100% - 4px));
-                @include calc (height, calc(100% - 4px));
+            .heart-wrap .heart-circle {
+                @include calc(width, calc(100% - 4px));
+                @include calc(height, calc(100% - 4px));
             }
         }
     }
-    &.red{
-        .heart-wrap .heart .inner-heart{
-            &:after, &:before{
+    &.red {
+        .heart-wrap .heart .inner-heart {
+            &:after,
+            &:before {
                 background-color: $darkGrey;
             }
         }
     }
-    &.black{
-        .heart-wrap .heart .inner-heart{
-            &:after, &:before{
+    &.black {
+        .heart-wrap .heart .inner-heart {
+            &:after,
+            &:before {
                 background-color: $grey;
             }
         }
     }
 }
-.heart-wrap{
+.heart-wrap {
     position: relative;
     width: 100%;
     height: 100%;
-    @include prefix (border-radius, 50%);
-    @include prefix (transition, 0.3s $easing-curve);
-    
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    @include prefix(border-radius, 50%);
+    @include prefix(transition, 0.3s $easing-curve);
 
-    .heart{
-        @include prefix (transition, 0.5s $heart-curve);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .heart {
+        @include prefix(transition, 0.5s $heart-curve);
         width: 100%;
         height: 100%;
 
-        svg{
+        svg {
             width: 50%;
             height: 50%;
             top: 50%;
@@ -197,49 +204,50 @@ button.heart-outer-wrap{
             transform: translateY(-50%);
         }
 
-        .inner-heart{
+        .inner-heart {
             width: 100%;
             height: 100%;
             position: relative;
-            @include prefix (transition, 0.3s $easing-curve);
+            @include prefix(transition, 0.3s $easing-curve);
             z-index: $z-first-level;
-            
-            &:after, &:before{
+
+            &:after,
+            &:before {
                 width: 55%;
                 height: 95%;
                 position: absolute;
                 top: 2px;
-                content: "";
-                @include prefix (border-top-left-radius, 20px);
-                @include prefix (border-top-right-radius, 20px);
-                @include prefix (transition, 0.3s $easing-curve);
+                content: '';
+                @include prefix(border-top-left-radius, 20px);
+                @include prefix(border-top-right-radius, 20px);
+                @include prefix(transition, 0.3s $easing-curve);
             }
 
-            &:before{
+            &:before {
                 left: 0;
-                @include prefix (transform, rotate(45deg));
-                @include prefix (transform-origin, 100% 100%);
+                @include prefix(transform, rotate(45deg));
+                @include prefix(transform-origin, 100% 100%);
             }
-            &:after{
+            &:after {
                 left: 50%;
-                @include prefix (transform, rotate(-45deg));
-                @include prefix (transform-origin, 0 100%);
+                @include prefix(transform, rotate(-45deg));
+                @include prefix(transform-origin, 0 100%);
             }
         }
     }
-    .heart-circle{
+    .heart-circle {
         @include centerAbsV;
         @include centerAbsH;
         width: 2px;
         height: 2px;
         opacity: 0;
         background-color: $fadedRed;
-        @include prefix (transition, 0.3s $easing-curve);
-        @include prefix (border-radius, 50%);
+        @include prefix(transition, 0.3s $easing-curve);
+        @include prefix(border-radius, 50%);
     }
 }
 
-.tote-grid-element{
+.tote-grid-element {
     display: inline-block;
     float: left;
     width: 25%;
@@ -250,80 +258,82 @@ button.heart-outer-wrap{
     cursor: pointer;
     overflow: hidden;
     background-color: #ececec;
-    @include linear-gradient ( -45deg, #fff, $lightGrey );
-    @include prefix (transition, 0.4s $easing-curve);
+    @include linear-gradient(-45deg, #fff, $lightGrey);
+    @include prefix(transition, 0.4s $easing-curve);
 
-    &#zoomAnimation{
+    &#zoomAnimation {
         position: absolute;
         display: block;
         float: none;
         top: 0;
         left: 0;
         padding-bottom: 0;
-        @include prefix (transition, 0s);
-        @include prefix (transform-origin, center top);
+        @include prefix(transition, 0s);
+        @include prefix(transform-origin, center top);
     }
 
-    &.noAnimate{
-        @include prefix (transition, 0s);
+    &.noAnimate {
+        @include prefix(transition, 0s);
     }
 
-    &.black{
+    &.black {
         background: $lightestGrey;
     }
-    &.red{
+    &.red {
         background: $darkGrey;
 
         .tote-wrap .actual-tote {
-            .handle:before{
+            .handle:before {
                 background: $darkGrey;
             }
 
-            .bag-bottom .bl-corner, .br-corner{
+            .bag-bottom .bl-corner,
+            .br-corner {
                 border-left-color: $darkGrey;
                 border-bottom-color: $darkGrey;
             }
         }
     }
-    &.white{
+    &.white {
         background: $fadedRed;
 
-        .tote-wrap .actual-tote{
-            .handle{
+        .tote-wrap .actual-tote {
+            .handle {
                 border: 0;
 
-                &:before{
+                &:before {
                     background: $fadedRed;
                     border: 0;
                 }
             }
-            .bag-body{
+            .bag-body {
                 border: 0;
             }
             .bag-bottom {
-                .bottom{
+                .bottom {
                     border: 0;
                 }
 
-                .bl-corner, .br-corner{
+                .bl-corner,
+                .br-corner {
                     border-left-color: $fadedRed;
                     border-bottom-color: $fadedRed;
 
-                    &:after{
+                    &:after {
                         background-color: transparent;
                     }
                 }
             }
         }
     }
-    &.start{
-        @include prefix (transform, translateY(100%));
-        opacity:0;
+    &.start {
+        @include prefix(transform, translateY(100%));
+        opacity: 0;
     }
-    &.no-transition{
-        @include prefix (transition, none);
+    &.no-transition {
+        @include prefix(transition, none);
     }
-    &.dupe{
+    &.dupe {
         display: block;
         float: none;
         position: absolute;
@@ -340,36 +350,37 @@ button.heart-outer-wrap{
     //     @include prefix (transition, 0.3s $easing-curve);
     //     pointer-events: none;
     // }
-    
-    &:hover{
-        .tote-wrap{
-            @include prefix (transform, scale(1.1) translateY(-45%));
-            
-            .actual-tote .shadow-blur{
+
+    &:hover {
+        .tote-wrap {
+            @include prefix(transform, scale(1.1) translateY(-45%));
+
+            .actual-tote .shadow-blur {
                 opacity: 1;
             }
         }
-        .heart-outer-wrap{
+        .heart-outer-wrap {
             opacity: 0.8;
 
-            &:hover{
+            &:hover {
                 opacity: 1;
             }
         }
     }
 
-    &.view, &#zoomAnimation{
-        &:hover{
-            .tote-wrap{
-                @include prefix (transform, scale(1) translateY(-50%));
+    &.view,
+    &#zoomAnimation {
+        &:hover {
+            .tote-wrap {
+                @include prefix(transform, scale(1) translateY(-50%));
             }
-            .heart-outer-wrap{
+            .heart-outer-wrap {
                 opacity: 0;
             }
         }
     }
-    
-    .heart-outer-wrap{
+
+    .heart-outer-wrap {
         position: absolute;
         top: $body-padding-sml;
         right: $body-padding-sml;
@@ -379,59 +390,58 @@ button.heart-outer-wrap{
         width: 50px;
         height: 50px;
 
-        &.favorited{
+        &.favorited {
             opacity: 0.85;
 
-            &:hover{
+            &:hover {
                 opacity: 1;
             }
         }
 
-        .heart svg path{
-            @include prefix (transition, 0.3s $easing-curve);
+        .heart svg path {
+            @include prefix(transition, 0.3s $easing-curve);
         }
     }
-    .tote-wrap{
+    .tote-wrap {
         max-width: 60%;
         @include centerAbsH;
         @include centerAbsV;
         z-index: $z-first-level;
 
-        .actual-tote{
-            @include prefix (transition, 0s $easing-curve);
-            @include prefix (transform-origin, top center);
+        .actual-tote {
+            @include prefix(transition, 0s $easing-curve);
+            @include prefix(transform-origin, top center);
 
-            .bag-body .textfields-wrap{
+            .bag-body .textfields-wrap {
                 overflow: hidden;
                 @include contentBox;
                 width: 60%;
                 height: 60%;
                 padding: 10%;
             }
-            
-            .shadow-blur{
-                opacity: 0;
-                @include prefix (transition, 0.3s $easing-curve);
-            }
 
+            .shadow-blur {
+                opacity: 0;
+                @include prefix(transition, 0.3s $easing-curve);
+            }
         }
     }
 }
 
 @media screen and (max-width: $lrgBP) {
-    .content.browse-page .tote-grid-element{
+    .content.browse-page .tote-grid-element {
         width: 33.33%;
         padding-bottom: 33.33%;
     }
 }
 @media screen and (max-width: $medBP) {
-    .content.browse-page .tote-grid-element{
+    .content.browse-page .tote-grid-element {
         width: 50%;
         padding-bottom: 50%;
     }
 }
 @media screen and (max-width: $smlBP) {
-    .content.browse-page .tote-grid-element{
+    .content.browse-page .tote-grid-element {
         width: 100%;
         padding-bottom: 100%;
     }

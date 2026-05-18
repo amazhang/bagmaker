@@ -1,161 +1,185 @@
 @include font-face(HugeAvantGarde, '/fonts/huge_agb_v5', normal, $asset-pipeline: false);
 
 @media screen and (max-width: $medBP) {
-    body{
-        button{
+    body {
+        button {
             width: $button-size-sml;
             height: $button-size-sml;
             padding: $body-padding-sml;
             font-size: 12px;
             letter-spacing: 0.08em;
 
-            &.text{        
+            &.text {
                 padding: 0 $body-padding-sml;
                 line-height: $button-size-sml;
             }
         }
 
-        nav{
+        nav {
             height: $navHeight-sml;
 
-            .sort{
+            .sort {
                 line-height: $navHeight-sml;
                 font-size: 24px;
 
-                .selected-sort{
+                .selected-sort {
                     padding-left: $body-padding-sml;
                 }
 
-                &.on-state ul{
+                &.on-state ul {
                     height: $navHeight-sml * 3;
                 }
 
-                .sort-option{
+                .sort-option {
                     margin: 0 $body-padding-sml;
                 }
             }
-            .create button{
+            .create button {
                 right: $body-padding-sml;
                 top: ($navHeight-sml - $button-size-sml) * 0.5;
                 width: $button-size-sml;
 
-                &:before, &:after{
-                    content: "";
+                &:before,
+                &:after {
+                    content: '';
                     position: absolute;
                     @include centerAbsH;
                     @include centerAbsV;
                     background-color: #fff;
-                    @include prefix (border-radius, 2px);
+                    @include prefix(border-radius, 2px);
                 }
 
-                &:before{
+                &:before {
                     width: 3px;
                     height: 40%;
                 }
 
-                &:after{
+                &:after {
                     height: 3px;
                     width: 40%;
                 }
             }
         }
-        .content{
+        .content {
             padding-top: $navHeight-sml;
         }
 
-        .tote-grid-element .heart-outer-wrap, .tote-grid-element:hover .heart-outer-wrap{
+        .tote-grid-element .heart-outer-wrap,
+        .tote-grid-element:hover .heart-outer-wrap {
             opacity: 1;
         }
     }
 }
 
-html, body{
+html,
+body {
     margin: 0;
     padding: 0;
     font-family: HugeAvantGarde;
-    font-size:16px;
+    font-size: 16px;
 
-    *{
+    * {
         @include borderBox;
-        
-        &.instant{
-            @include prefix (transition, 0s);
+
+        &.instant {
+            @include prefix(transition, 0s);
         }
 
-        &.hidden{
+        &.hidden {
             display: none;
         }
 
-        &.invisible{
+        &.invisible {
             opacity: 0;
         }
     }
 }
 
-body.lock-scroll{
+body.lock-scroll {
     height: 100%;
     overflow: hidden;
 }
 
-button{
+button {
     width: $button-size;
     height: $button-size;
     padding: 0 $body-padding;
 
-    @include prefix (border-radius, #{$button-size * 0.5} );
+    @include prefix(border-radius, #{$button-size * 0.5});
     border: 0;
     background-color: #fff;
-    @include prefix (box-shadow, inset 0 0 0 0px rgba(210,209,209, .4), 0 0 2px 0px rgba(1,1,1,.1), 0 2px 10px 0px rgba(1,1,1,.15));
-    
+    @include prefix(
+        box-shadow,
+        inset 0 0 0 0px rgba(210, 209, 209, 0.4),
+        0 0 2px 0px rgba(1, 1, 1, 0.1),
+        0 2px 10px 0px rgba(1, 1, 1, 0.15)
+    );
+
     background-size: $button-size * 0.5 $button-size * 0.5;
     background-repeat: no-repeat;
     background-position: center center;
-    
+
     cursor: pointer;
     outline: 0;
-    @include prefix (transition, 0.3s $easing-curve);
+    @include prefix(transition, 0.3s $easing-curve);
 
     text-transform: uppercase;
     font-size: 14px;
     letter-spacing: 0.02em;
     font-family: HugeAvantGarde;
 
-    &:hover{
-        @include prefix (box-shadow, inset 0 0 0 0px rgba(210,209,209, .4), 0 0 2px 0px rgba(1,1,1,.1), 0 2px 10px 0px rgba(1,1,1,.4));
-        @include prefix (transform, scale(1.05));
-    }
-    
-    &:active{
-        @include prefix (transform, scale(0.9));
+    &:hover {
+        @include prefix(
+            box-shadow,
+            inset 0 0 0 0px rgba(210, 209, 209, 0.4),
+            0 0 2px 0px rgba(1, 1, 1, 0.1),
+            0 2px 10px 0px rgba(1, 1, 1, 0.4)
+        );
+        @include prefix(transform, scale(1.05));
     }
 
-    &.text{
+    &:active {
+        @include prefix(transform, scale(0.9));
+    }
+
+    &.text {
         width: auto;
         color: $button-text;
         padding: 0 $body-padding;
         line-height: $button-size;
     }
 
-    &.disabled, &.disabled.save{
+    &.disabled,
+    &.disabled.save {
         cursor: auto;
         background-color: $grey;
 
-        &:hover{
-            @include prefix (box-shadow, inset 0 0 0 0px rgba(210,209,209, .4), 0 0 2px 0px rgba(1,1,1,.1), 0 2px 10px 0px rgba(1,1,1,.15));
-            @include prefix (transform, scale(1));
+        &:hover {
+            @include prefix(
+                box-shadow,
+                inset 0 0 0 0px rgba(210, 209, 209, 0.4),
+                0 0 2px 0px rgba(1, 1, 1, 0.1),
+                0 2px 10px 0px rgba(1, 1, 1, 0.15)
+            );
+            @include prefix(transform, scale(1));
         }
     }
 }
 
-nav{
+nav {
     height: $navHeight;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    background-color: rgba(255,255,255,0.97);
+    background-color: rgba(255, 255, 255, 0.97);
     // border-bottom: 1px solid $stroke-color;
-    @include prefix (box-shadow, inset 0 0 0 0px rgba(210,209,209, .4), 0 0 2px 0px rgba(1,1,1,.1), 0 2px 10px 0px rgba(1,1,1,.15));
+    @include prefix(
+        box-shadow,
+        inset 0 0 0 0px rgba(210, 209, 209, 0.4),
+        0 0 2px 0px rgba(1, 1, 1, 0.1),
+        0 2px 10px 0px rgba(1, 1, 1, 0.15)
+    );
     z-index: $z-second-level;
 
     // .logo{
@@ -170,8 +194,8 @@ nav{
     //     cursor: pointer;
     // }
 
-    & > *{
-        @include prefix (transition, 0.3s $easing-curve);
+    & > * {
+        @include prefix(transition, 0.3s $easing-curve);
         cursor: pointer;
     }
 
@@ -181,62 +205,63 @@ nav{
         float: left;
         font-size: 28px;
         line-height: $navHeight;
-        
-        .sort-option{
+
+        .sort-option {
             display: inline-block;
             margin: 0 $body-padding;
             color: $lightGrey;
-            @include prefix (transition, 0.3s $easing-curve);
+            @include prefix(transition, 0.3s $easing-curve);
             cursor: pointer;
 
-            &:after{
-                content: ".";
+            &:after {
+                content: '.';
             }
 
-            &:hover{
+            &:hover {
                 color: $grey;
             }
 
-            &:nth-child(odd){
+            &:nth-child(odd) {
                 margin-right: 0;
             }
 
-            &.sel{
+            &.sel {
                 color: #000;
             }
         }
 
-        &:hover, &.on-state{
-            .selected-sort{
+        &:hover,
+        &.on-state {
+            .selected-sort {
                 background-color: $magenta;
                 color: #fff;
 
-                &:after{
-                    border-top: 7px solid rgba(255,255,255,0.95);
+                &:after {
+                    border-top: 7px solid rgba(255, 255, 255, 0.95);
                 }
             }
 
-            ul{
+            ul {
                 height: $navHeight * 3;
                 pointer-events: auto;
                 opacity: 1;
-                @include prefix (transform, translateY(0));
+                @include prefix(transform, translateY(0));
             }
         }
-        
-        .selected-sort{
+
+        .selected-sort {
             width: 100%;
-            @include prefix (transition, 0.3s $easing-curve);
+            @include prefix(transition, 0.3s $easing-curve);
             position: relative;
             text-align: left;
             padding: 0 ($body-padding + 15) 0 $body-padding;
 
-            .name{
+            .name {
                 padding-right: 10px;
             }
 
-            &:after{
-                content: "";
+            &:after {
+                content: '';
                 width: 0;
                 height: 0;
                 border-left: 7px solid transparent;
@@ -247,10 +272,10 @@ nav{
                 margin-top: -3px;
                 right: $body-padding;
                 margin-left: -5px;
-                @include prefix (transition, 0.3s $easing-curve);
+                @include prefix(transition, 0.3s $easing-curve);
             }
         }
-        
+
         ul {
             display: block;
             position: absolute;
@@ -266,15 +291,15 @@ nav{
             //width: 250px;
             text-align: left;
             overflow: hidden;
-            
-            @include prefix (transition, 0.5s $easing-curve);
-            @include prefix (transform, translateY(-10px));
+
+            @include prefix(transition, 0.5s $easing-curve);
+            @include prefix(transform, translateY(-10px));
 
             &:hover {
                 height: $navHeight * 3;
                 pointer-events: auto;
                 opacity: 1;
-                @include prefix (transform, translateY(0));
+                @include prefix(transform, translateY(0));
             }
 
             // &:before{
@@ -289,7 +314,7 @@ nav{
             //     right: $body-padding - 5px;
             // }
 
-            li{
+            li {
                 color: #fff;
                 display: block;
                 margin: 0;
@@ -297,22 +322,22 @@ nav{
                 padding: 0 $body-padding;
                 font-size: 24px;
                 //width: 250px;
-                border-top: 1px solid rgba(255,255,255,0.2);
-                @include prefix (transition, 0.3s $easing-curve);
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                @include prefix(transition, 0.3s $easing-curve);
 
-                &:hover{
+                &:hover {
                     background-color: rgba(255, 255, 255, 0.2);
                 }
             }
         }
     }
 
-    .create{
+    .create {
         color: #000;
         float: right;
         height: 100%;
 
-        button{
+        button {
             position: absolute;
             right: $body-padding;
             top: ($navHeight - $button-size) * 0.5;
@@ -322,206 +347,213 @@ nav{
     }
 }
 @media screen and (min-width: $lrgBP) {
-    nav .sort ul{
+    nav .sort ul {
         width: 25vw;
     }
 }
 @media screen and (max-width: $medBP) {
-    nav .sort ul{
+    nav .sort ul {
         width: 50vw;
     }
 }
 @media screen and (max-width: $smlBP) {
-    nav .sort ul{
+    nav .sort ul {
         width: 100vw;
     }
 }
 
-body .tote-wrap{
+body .tote-wrap {
     position: relative;
-    @include prefix (user-select, none);
-    @include prefix (transition, 0.5s $easing-curve);
+    @include prefix(user-select, none);
+    @include prefix(transition, 0.5s $easing-curve);
 
-    &.red{
+    &.red {
         .actual-tote .handle {
             background-color: $red;
         }
-        .actual-tote .bag-bottom{
-            .bottom{
+        .actual-tote .bag-bottom {
+            .bottom {
                 background-color: $red;
             }
         }
-        .actual-tote .bag-body{
+        .actual-tote .bag-body {
             background-color: $red;
 
-            .textfields-wrap .strikethrough .strike, .editable-field.strikethrough .clone-text-wrap{
+            .textfields-wrap .strikethrough .strike,
+            .editable-field.strikethrough .clone-text-wrap {
                 color: #000 !important;
             }
 
-            &:after{
-                background-image: url("/images/huge-logo-white.svg");
+            &:after {
+                background-image: url('/images/huge-logo-white.svg');
             }
-            textarea, .text{
+            textarea,
+            .text {
                 color: #fff;
             }
         }
     }
-    &.orange{
+    &.orange {
         .actual-tote .handle {
             // background-color: $orange;
         }
-        .actual-tote .bag-bottom{
-            .bottom{
+        .actual-tote .bag-bottom {
+            .bottom {
                 background-color: $orange;
             }
         }
-        .actual-tote .bag-body{
+        .actual-tote .bag-body {
             background-color: $orange;
 
-            &:after{
-                background-image: url("/images/huge-logo-white.svg");
+            &:after {
+                background-image: url('/images/huge-logo-white.svg');
             }
-            textarea, .text{
+            textarea,
+            .text {
                 color: #fff;
             }
         }
     }
-    &.yellow{
+    &.yellow {
         .actual-tote .handle {
             // background-color: $yellow;
         }
-        .actual-tote .bag-bottom{
-            .bottom{
+        .actual-tote .bag-bottom {
+            .bottom {
                 background-color: $yellow;
             }
         }
-        .actual-tote .bag-body{
+        .actual-tote .bag-body {
             background-color: $yellow;
 
-            textarea{
+            textarea {
                 @include placeholder {
                     color: rgba(25, 25, 25, 0.5);
                 }
             }
 
-            &:after{
-                background-image: url("/images/huge-logo-white.svg");
+            &:after {
+                background-image: url('/images/huge-logo-white.svg');
             }
-            textarea, .text{
+            textarea,
+            .text {
                 color: #fff;
             }
         }
     }
-    &.green{
+    &.green {
         .actual-tote .handle {
             // background-color: $green;
         }
-        .actual-tote .bag-bottom{
-            .bottom{
+        .actual-tote .bag-bottom {
+            .bottom {
                 background-color: $green;
             }
         }
-        .actual-tote .bag-body{
+        .actual-tote .bag-body {
             // background-color: $green;
 
-            &:after{
-                background-image: url("/images/huge-logo-white.svg");
+            &:after {
+                background-image: url('/images/huge-logo-white.svg');
             }
-            textarea, .text{
+            textarea,
+            .text {
                 color: #fff;
             }
         }
     }
-    &.cyan{
+    &.cyan {
         .actual-tote .handle {
             // background-color: $cyan;
         }
-        .actual-tote .bag-bottom{
-            .bottom{
+        .actual-tote .bag-bottom {
+            .bottom {
                 background-color: $cyan;
             }
         }
-        .actual-tote .bag-body{
+        .actual-tote .bag-body {
             background-color: $cyan;
 
-            &:after{
-                background-image: url("/images/huge-logo-white.svg");
+            &:after {
+                background-image: url('/images/huge-logo-white.svg');
             }
-            textarea, .text{
+            textarea,
+            .text {
                 color: #fff;
             }
         }
     }
-    &.white{
+    &.white {
         .actual-tote .handle {
             border-bottom: 0;
 
-            &:before{
+            &:before {
                 border: 1px solid $stroke-color;
                 border-bottom: 0;
             }
         }
-        .actual-tote .bag-bottom{
-            .bottom{
-                background-color: #fff; 
-                border-bottom: 1px solid $stroke-color;       
+        .actual-tote .bag-bottom {
+            .bottom {
+                background-color: #fff;
+                border-bottom: 1px solid $stroke-color;
             }
-            .bl-corner, .br-corner{
-                &:after{
+            .bl-corner,
+            .br-corner {
+                &:after {
                     position: absolute;
-                    content: "";
+                    content: '';
                     width: 0.256em;
                     height: 2px;
                     top: 0;
                     right: -0.135em;
                     background-color: $stroke-color;
-                    @include prefix (transform, rotate(45deg));
+                    @include prefix(transform, rotate(45deg));
                 }
             }
         }
-        .actual-tote .bag-body{
+        .actual-tote .bag-body {
             border: 2px solid $stroke-color;
             border-bottom: 0;
             background-color: #fff;
 
-            textarea{
+            textarea {
                 @include placeholder {
                     color: rgba(25, 25, 25, 0.5);
                 }
             }
-            
-            &:after{
-                background-image: url("/images/huge-logo.svg");
+
+            &:after {
+                background-image: url('/images/huge-logo.svg');
             }
-            textarea, .text{
+            textarea,
+            .text {
                 color: #000;
             }
         }
     }
 
-    &.big{
+    &.big {
         .actual-tote {
             width: 85%;
 
-            .bag-body{
+            .bag-body {
                 padding-bottom: 75%;
             }
-            .handle{
+            .handle {
                 padding-bottom: 65%;
                 width: 45%;
             }
         }
     }
 
-    
     // all totes
-    .actual-tote{
+    .actual-tote {
         width: 70%;
         margin: 0 auto;
         padding: 7% 0;
-        @include prefix (transition, 0.5s $easing-curve);
-        
-        .handle{
+        @include prefix(transition, 0.5s $easing-curve);
+
+        .handle {
             width: 60%;
             margin: 0 auto;
             margin-bottom: 2px;
@@ -531,36 +563,36 @@ body .tote-wrap{
             background-color: #000;
             border-top-left-radius: 50% 100%;
             border-top-right-radius: 50% 100%;
-            @include prefix (transition, 0.5s $easing-curve);
+            @include prefix(transition, 0.5s $easing-curve);
 
-            &:before{
-                content: "";
+            &:before {
+                content: '';
                 width: 72%;
                 height: 100%;
-                
+
                 position: absolute;
                 top: 2px;
                 @include centerAbsH;
-                @include prefix (transition, 0.3s $easing-curve);
+                @include prefix(transition, 0.3s $easing-curve);
 
                 background-color: $lightestGrey;
                 border-top-left-radius: 50% 100%;
                 border-top-right-radius: 50% 100%;
             }
         }
-        
-        .bag-body{
+
+        .bag-body {
             width: 100%;
             height: 0;
             padding-bottom: 90%;
             position: relative;
             z-index: $z-first-level;
             background-color: #000;
-            @include prefix (transition, 0.5s $easing-curve);
-            @include prefix (transition-property, background, padding);
+            @include prefix(transition, 0.5s $easing-curve);
+            @include prefix(transition-property, background, padding);
 
-            &:before{
-                content: "";
+            &:before {
+                content: '';
 
                 position: absolute;
                 top: 7%;
@@ -568,47 +600,47 @@ body .tote-wrap{
                 width: 3.5%;
                 height: 7%;
 
-                background: $magenta url("/images/h.svg") center center no-repeat;
+                background: $magenta url('/images/h.svg') center center no-repeat;
                 background-size: 60%;
             }
 
-            &:after{
-                content: "";
+            &:after {
+                content: '';
 
                 width: 80%;
                 bottom: 3%;
                 @include centerAbsH;
                 height: 3%;
 
-                background: url("/images/huge-logo.svg") left center no-repeat;
+                background: url('/images/huge-logo.svg') left center no-repeat;
                 background-size: contain;
             }
 
-            .textfields-wrap{
+            .textfields-wrap {
                 margin: 10%;
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 80%;
                 height: 80%;
-                
-                *{
+
+                * {
                     color: #fff;
                 }
             }
 
-            .text{
+            .text {
                 font-size: 0.29em;
                 letter-spacing: -0.05em;
                 line-height: 1em;
-                
+
                 position: absolute;
                 top: 0;
                 left: 0;
                 right: 0;
 
-                &.strikethrough{
-                    .strike{
+                &.strikethrough {
+                    .strike {
                         position: absolute;
                         top: 0;
                         left: 0;
@@ -618,7 +650,7 @@ body .tote-wrap{
                         width: 100%;
                         height: 100%;
 
-                        .inner-strike{
+                        .inner-strike {
                             color: transparent;
                         }
                     }
@@ -626,27 +658,28 @@ body .tote-wrap{
             }
         }
 
-        .bag-bottom{
+        .bag-bottom {
             width: 100%;
             padding-bottom: 10%;
             position: relative;
 
-            & > *{
+            & > * {
                 display: inline-block;
                 float: left;
             }
-            
-            .bottom{
-               width: 100%;
-               height: 100%;
-               position: absolute;
-               top: -1px;
-               left: 0;
-               background-color: #000;
-               @include prefix (transition, 0.5s $easing-curve);
-               @include prefix (transition-property, background-color);
+
+            .bottom {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: -1px;
+                left: 0;
+                background-color: #000;
+                @include prefix(transition, 0.5s $easing-curve);
+                @include prefix(transition-property, background-color);
             }
-            .bl-corner, .br-corner{
+            .bl-corner,
+            .br-corner {
                 position: absolute;
                 bottom: -1px;
                 border: solid 0.1em transparent;
@@ -655,8 +688,8 @@ body .tote-wrap{
                 border-left: solid 0.1em $lightestGrey;
                 border-bottom: solid 0.1em $lightestGrey;
                 z-index: 1;
-                @include prefix (transition, 0.5s $easing-curve);
-                @include prefix (transition-property, border-color);
+                @include prefix(transition, 0.5s $easing-curve);
+                @include prefix(transition-property, border-color);
 
                 // &:before{
                 //     content: "";
@@ -664,31 +697,35 @@ body .tote-wrap{
                 //     position: absolute;
                 //     bottom: 26%;
                 //     left: 26%;
-                    
+
                 //     width: 141.421%;
                 //     height: 141.421%;
                 //     background-color: #000;
                 //     @include prefix (transition, 0.5s $easing-curve);
                 // }
             }
-            .bl-corner{
+            .bl-corner {
                 left: -1px;
             }
-            .br-corner{
-                @include prefix (transform, rotate(-90deg));
+            .br-corner {
+                @include prefix(transform, rotate(-90deg));
                 right: -1px;
             }
         }
 
-        .shadow-blur{
-            @include prefix (filter, blur(2px));
+        .shadow-blur {
+            @include prefix(filter, blur(2px));
             width: 100%;
             margin-top: 10%;
 
-            .tote-shadow{
+            .tote-shadow {
                 //50% center, ellipse farthest-side, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)
-                background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0) 70%);
-                @include prefix (border-radius, 50%);
+                background: radial-gradient(
+                    ellipse at 50% 50%,
+                    rgba(0, 0, 0, 0.4) 30%,
+                    rgba(0, 0, 0, 0) 70%
+                );
+                @include prefix(border-radius, 50%);
                 width: 120%;
                 margin-left: -10%;
                 height: 0;
@@ -699,35 +736,64 @@ body .tote-wrap{
     }
 }
 
-
-.content{
+.content {
     width: 100%;
     padding-top: $navHeight;
     position: relative;
 }
-.clearfix{
+.clearfix {
     clear: both;
     float: none;
 }
 
-.lrg {display: block;}
-.lrg-med {display: block;}
-.med {display: none;}
-.med-sml {display: none;}
-.sml {display: none;}
+.lrg {
+    display: block;
+}
+.lrg-med {
+    display: block;
+}
+.med {
+    display: none;
+}
+.med-sml {
+    display: none;
+}
+.sml {
+    display: none;
+}
 
 @media screen and (max-width: $medBP) {
-    .lrg{display: none;}
-    .lrg-med {display: block;}
-    .med {display: block;}
-    .med-sml {display: block;}
-    .sml {display: none;}
+    .lrg {
+        display: none;
+    }
+    .lrg-med {
+        display: block;
+    }
+    .med {
+        display: block;
+    }
+    .med-sml {
+        display: block;
+    }
+    .sml {
+        display: none;
+    }
 }
 
 @media screen and (max-width: $smlBP) {
-    .lrg{display: none;}
-    .lrg-med {display: none;}
-    .med {display: none;}
-    .med-sml {display: block;}
-    .sml {display: block;}
+    .lrg {
+        display: none;
+    }
+    .lrg-med {
+        display: none;
+    }
+    .med {
+        display: none;
+    }
+    .med-sml {
+        display: block;
+    }
+    .sml {
+        display: block;
+    }
 }
