@@ -1,13 +1,13 @@
 **/.sass-cache
 **/.sass-cache/*
 node_modules
+.env
+.env.local
 bag-maker-key.pem
 data/*
 data/**/*
 data/*/*
 npm-debug.log
-min/
-bin/www
 .DS_Store
 public/.DS_Store
 routes/.DS_Store

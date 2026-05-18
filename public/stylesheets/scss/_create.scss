@@ -154,10 +154,10 @@ button{
             }
         }
         .addTextfield{
-            margin-top: -$button-size-sml/2;
+            margin-top: -$button-size-sml * 0.5;
         }
         .bag-size-wrap{
-            margin-top: -$button-size-sml/2;
+            margin-top: -$button-size-sml * 0.5;
             width: 120px;
             
             &:after{
@@ -657,7 +657,7 @@ button{
     .addTextfield{
         position: absolute;
         top: 50%;
-        margin-top: -$button-size/2;
+        margin-top: -$button-size * 0.5;
         left: $body-padding;
 
         &:before, &:after{
@@ -688,7 +688,7 @@ button{
     .bag-size-wrap{
         @include centerAbsH;
         top: 50%;
-        margin-top: -$button-size/2;
+        margin-top: -$button-size * 0.5;
         width: 200px;
 
         &:after{
@@ -710,7 +710,7 @@ button{
             position: absolute;
             top: 0;
             left: 0;
-            @include prefix (border-radius, #{$button-size/2} );
+            @include prefix (border-radius, #{$button-size * 0.5} );
             @include prefix (transition, 0.3s $easing-curve);
         }
         
@@ -770,7 +770,7 @@ button{
             background-position: center center;
             background-repeat: no-repeat;
             background-image: url("/images/small-bag-icon.svg");
-            background-size: ($button-size - 15px) (($button-size - 15px) / 2);
+            background-size: ($button-size - 15px) (($button-size - 15px) * 0.5);
             opacity: 0.3;
             position: relative;
             cursor: pointer;

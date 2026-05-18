@@ -1,92 +1,101 @@
-var express = require('express');
-var router = express.Router();
-
-var mongoose = require('mongoose');
-var Totebag = mongoose.model('Totebag');
-var pageLimit = 10;
-
-/* GET totes listing. */
-// router.get('/data', function(req, res) {
-//     Totebag.find(function(err, totebags) {
-//         if(err) {
-//           console.log(err);
-//           return res.status(500).json("Internal Server Error");  
-//         }        
-//         return res.status(200).json(totebags);
-//     });
-// });
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const Totebag = mongoose.model('Totebag');
 
 /* GET New tote page. */
-router.get('/newtote', function(req, res) {
+router.get('/newtote', function (req, res) {
     res.render('newtote', { title: 'Create a Tote / Totebag Maker / Huge inc.' });
 });
 
 /* POST to createtote */
-router.post('/createtote', function(req, res) {
-    // if it meets the admin requirements.
-    if (req.body.textfields.length === 1 && req.body.textfields[0].text === "Enter Sesame"){
-        return res.send({ res: "Success"});
-    }
-    else{
-        var newtote = new Totebag(req.body);
-        newtote.save(function(err) {
-            if(err) return res.status(500).json(err);
-            return res.send({ res: "Success"});
-        });
+router.post('/createtote', async function (req, res) {
+    try {
+        // "Enter Sesame" admin escape hatch — original 2015 behavior preserved.
+        if (req.body.textfields &&
+            req.body.textfields.length === 1 &&
+            req.body.textfields[0].text === 'Enter Sesame') {
+            return res.send({ res: 'Success' });
+        }
+
+        const newtote = new Totebag(req.body);
+        await newtote.save();
+        res.send({ res: 'Success' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
     }
 });
 
 /* DELETE to deletetote */
-router.get('/deletetote/:id', function(req, res) {
-    var toteToDelete = req.params.id;
-    Totebag.findByIdAndRemove(toteToDelete, null, function(err) {
-        if(err) return res.status(500).json("Internal Server Error");
-        
+router.get('/deletetote/:id', async function (req, res) {
+    try {
+        await Totebag.findByIdAndDelete(req.params.id);
         res.render('index', {
-            title : 'Latest | Totebag Maker | Huge inc.',
-            sort : "latest"
+            title: 'Latest | Totebag Maker | Huge inc.',
+            sort: 'latest'
         });
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal Server Error');
+    }
 });
 
-/* UPDATE  to updatetote */
-router.put('/updatetote/:id', function(req, res) {
-    var toteToUpdate = req.params.id;
-
-    Totebag.findOneAndUpdate({_id: toteToUpdate}, req.body, function(err) {
-        if(err) return res.status(500).json("Internal Server Error");
-        return res.send({ res: "Success"});
-    });
+/* UPDATE to updatetote */
+router.put('/updatetote/:id', async function (req, res) {
+    try {
+        await Totebag.findOneAndUpdate({ _id: req.params.id }, req.body);
+        res.send({ res: 'Success' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal Server Error');
+    }
 });
 
-// validates all uses of the "id" variable.
-router.param('id', function(req, res, next, id){
-    Totebag.findById(id, function (err, found) {
-        // if you can't find this id, take them to the index page.
-        if (found === null || typeof found === "undefined")
-            handle404(req, res);
-        // valid id
-        else
-            next();
-    });    
+// Validate :id by ensuring the tote exists.
+router.param('id', async function (req, res, next, id) {
+    try {
+        if (!mongoose.isValidObjectId(id)) {
+            return res.render('index', {
+                title: 'Latest | Totebag Maker | Huge inc.',
+                sort: 'latest'
+            });
+        }
+        const found = await Totebag.findById(id);
+        if (!found) {
+            return res.render('index', {
+                title: 'Latest | Totebag Maker | Huge inc.',
+                sort: 'latest'
+            });
+        }
+        next();
+    } catch (err) {
+        next(err);
+    }
 });
 
 /* GET a single tote */
-router.get('/:id', function(req, res) {
-    var toteToUpdate = req.params.id;
-    Totebag.findOne({_id: toteToUpdate}, function(err, totebag) {
-        if(err){
-            res.render('index', {
-                title : 'Latest | Totebag Maker | Huge inc.',
-                sort : "latest"
+router.get('/:id', async function (req, res) {
+    try {
+        const totebag = await Totebag.findById(req.params.id);
+        if (!totebag) {
+            return res.render('index', {
+                title: 'Latest | Totebag Maker | Huge inc.',
+                sort: 'latest'
             });
         }
-        res.render("index", {
+        res.render('index', {
             title: 'View Tote | Totebag Maker | Huge inc.',
-            toteID : toteToUpdate,
-            sort : "latest"
+            toteID: req.params.id,
+            sort: 'latest'
         });
-    });
+    } catch (err) {
+        console.error(err);
+        res.render('index', {
+            title: 'Latest | Totebag Maker | Huge inc.',
+            sort: 'latest'
+        });
+    }
 });
 
 module.exports = router;

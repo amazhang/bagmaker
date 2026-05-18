@@ -1,0 +1,24 @@
+# Render Blueprint — defines the bagmaker web service.
+# After creating this file, in Render dashboard go to:
+#   New + > Blueprint > connect this repo
+# Render will read this file and provision the service automatically.
+#
+# Alternatively, you can ignore this file and configure the service manually
+# in the Render dashboard with the same Build Command / Start Command below.
+
+services:
+  - type: web
+    name: bagmaker
+    runtime: node
+    plan: free
+    region: oregon  # closest free-tier region to most US users; change if you prefer
+    branch: master
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false  # do NOT commit this — set it in the Render dashboard
+      # PORT is provided by Render automatically; bin/www reads it via process.env.PORT.

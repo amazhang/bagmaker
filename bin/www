@@ -1,9 +1,14 @@
 #!/usr/bin/env node
-var debug = require('debug')('bagmaker-node');
-var app = require('../app');
+require('dotenv').config();
+const debug = require('debug')('bagmaker-node');
+const app = require('../app');
 
-app.set('port', process.env.PORT || 3000);
+const port = process.env.PORT || 3000;
+app.set('port', port);
 
-var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
+const server = app.listen(port, function () {
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    debug('Express server listening on ' + bind);
+    console.log('[bagmaker] listening on http://localhost:' + addr.port);
 });

@@ -1,230 +1,158 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const Totebag = mongoose.model('Totebag');
 
-var mongoose = require('mongoose');
-var Totebag = mongoose.model('Totebag');
-var sorts = ["latest", "oldest", "popular", "views"];
+const sorts = ['latest', 'oldest', 'popular', 'views'];
 
+function sortNameFor(sort) {
+    if (sort === 'latest') return 'Latest';
+    if (sort === 'oldest') return 'Oldest';
+    if (sort === 'popular') return 'Popular';
+    if (sort === 'views') return 'Most Views';
+    return undefined;
+}
 
-function handle404(req, res){
-    console.log("\n\n\n\n404\n\n\n\n");
+function getSortAttributeNextFromSort(sort) {
+    const sortAttribute = {};
+    if (sort === 'latest') sortAttribute.timestamp = -1;
+    else if (sort === 'oldest') sortAttribute.timestamp = 1;
+    else if (sort === 'popular') { sortAttribute.likes = -1; sortAttribute._id = -1; }
+    else if (sort === 'views') sortAttribute.views = -1;
+    return sortAttribute;
+}
+
+function handle404(req, res) {
     res.render('index', {
-        title : 'Latest | Totebag Maker | Huge inc.',
-        sort : "latest"
+        title: 'Latest | Totebag Maker | Huge inc.',
+        sort: 'latest'
     });
 }
 
-function getSortAttributePrevFromSort(sort){
-    var sortAttribute = {};    
-    if (sort === "latest")
-        sortAttribute.timestamp = 1; // desc
-    else if (sort === "oldest") 
-        sortAttribute.timestamp = -1; // asc, oldest
-    else if (sort === "popular")
-        sortAttribute.likes = 1;
-    else if (sort === "views")
-        sortAttribute.views = 1;
-
-    return sortAttribute;
-}
-
-function getSortAttributeNextFromSort(sort){
-    var sortAttribute = {};    
-    if (sort === "latest")
-        sortAttribute.timestamp = -1; // desc
-    else if (sort === "oldest") 
-        sortAttribute.timestamp = 1; // asc, oldest
-    else if (sort === "popular"){
-        sortAttribute.likes = -1;
-        sortAttribute._id = -1;
-    }
-    else if (sort === "views")
-        sortAttribute.views = -1;
-
-    return sortAttribute;
-}
-
-function getSortFieldFromSort(sort){
-    var sortField = "timestamp";
-    if (sort === "popular")
-        sortField = "likes";
-    else if (sort === "views")
-        sortField = "views";
-
-    return sortField;
-}
+// ----- Page routes -------------------------------------------------------
 
 /* GET home page. Default: latest */
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
     res.render('index', {
-        title : 'Latest | Totebag Maker | Huge inc.',
-        sort : "latest"
+        title: 'Latest | Totebag Maker | Huge inc.',
+        sort: 'latest'
     });
 });
 
-// validates all uses of the "id" variable.
-router.param('sort', function(req, res, next, sort){
-    // if you can't find this id, take them to the index page.
-    if (sorts.indexOf(sort) === -1){
-        handle404(req, res);
+// Validate :sort
+router.param('sort', function (req, res, next, sort) {
+    if (sorts.indexOf(sort) === -1) {
+        return handle404(req, res);
     }
-    // valid id
-    else
-        next();
+    next();
 });
 
-// validates all uses of the "id" variable.
-router.param('id', function(req, res, next, id){
-    Totebag.findById(id, function (err, found) {
-        // if you can't find this id, take them to the index page.
-        if (found === null || typeof found === "undefined")
-            handle404(req, res);
-        // valid id
-        else
-            next();
-    });    
+// Validate :id by checking it exists in Mongo.
+router.param('id', async function (req, res, next, id) {
+    try {
+        if (!mongoose.isValidObjectId(id)) return handle404(req, res);
+        const found = await Totebag.findById(id);
+        if (!found) return handle404(req, res);
+        next();
+    } catch (err) {
+        next(err);
+    }
 });
 
-router.get('/:sort', function(req, res) {
-    var sort = req.params.sort;
-    
-    var sortName;
-    if (sort === "latest")
-        sortName = "Latest";
-    else if (sort === "oldest")
-        sortName = "Oldest";
-    else if (sort === "popular")
-        sortName = "Popular";
-    else if (sort === "views")
-        sortName = "Most Views";
-
-    if (typeof sortName === "undefined")
-        next();
-
+router.get('/:sort', function (req, res) {
+    const sort = req.params.sort;
+    const sortName = sortNameFor(sort);
+    if (!sortName) return handle404(req, res);
     res.render('index', {
-        title : sortName + ' | Totebag Maker | Huge inc.',
-        sort : sort
+        title: sortName + ' | Totebag Maker | Huge inc.',
+        sort: sort
     });
 });
 
-router.get('/:sort/tote/:id', function(req, res) {
-    var sort = req.params.sort;
-    var id = req.params.id;
-    
-    var sortName;
-    if (sort === "latest")
-        sortName = "Latest";
-    else if (sort === "oldest")
-        sortName = "Oldest";
-    else if (sort === "popular")
-        sortName = "Popular";
-    else if (sort === "views")
-        sortName = "Most Views";
-
-    if (typeof sortName === "undefined")
-        next();
-
+router.get('/:sort/tote/:id', function (req, res) {
+    const sort = req.params.sort;
+    const id = req.params.id;
+    const sortName = sortNameFor(sort);
+    if (!sortName) return handle404(req, res);
     res.render('index', {
-        title : 'View Tote | Totebag Maker | Huge inc.',
-        toteID : id,
-        sort : sort
+        title: 'View Tote | Totebag Maker | Huge inc.',
+        toteID: id,
+        sort: sort
     });
 });
+
+// ----- JSON data endpoints -----------------------------------------------
 
 // return a single tote json based on sort and index (not id).
-router.get("/data/:sort/:index", function(req, res){
-    var skip = req.params.index;
-    var sort = req.params.sort;
-    var sortAttribute = getSortAttributeNextFromSort(sort);
-
-    Totebag.find({},null,{
-        skip: skip,
-        limit: 1,
-        sort: sortAttribute
-    }, function(err, totebag) {
-        if(err) {
-          console.log(err);
-          return res.status(500).json("Internal Server Error");  
-        }
-        return res.status(200).json(totebag);
-    });
+router.get('/data/:sort/:index', async function (req, res, next) {
+    try {
+        const skip = parseInt(req.params.index, 10) || 0;
+        const sortAttribute = getSortAttributeNextFromSort(req.params.sort);
+        const totebag = await Totebag.find({}, null, {
+            skip: skip,
+            limit: 1,
+            sort: sortAttribute
+        });
+        res.status(200).json(totebag);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal Server Error');
+    }
 });
 
-// return a single tote json based on sort and id (not index).
-router.get("/data/:sort/tote/:id", function(req, res){
-    var id = req.params.id;
-    var sort = req.params.sort;
+// return tote json with neighbour info based on sort + id.
+router.get('/data/:sort/tote/:id', async function (req, res, next) {
+    try {
+        const id = req.params.id;
+        const sortAttribute = getSortAttributeNextFromSort(req.params.sort);
+        const totebags = await Totebag.find({}, null, { sort: sortAttribute });
 
-    var sortAttribute = getSortAttributeNextFromSort(sort);
-
-    Totebag.find({}, null, {
-        sort: sortAttribute
-    }, function(err, totebags) {
-        if(err) {
-            console.log(err);
-            return res.status(500).json("Internal Server Error"); 
-        }
-        for (var i = 0; i < totebags.length; i++){
-            if (("" + totebags[i]._id) === id){
-                var clone = JSON.parse(JSON.stringify(totebags[i]));
-                
-                var prevIndex = i - 1;
-                if (prevIndex < 0){
-                    prevIndex = totebags.length - 1;
-                }
-                var nextIndex = i + 1;
-                if (nextIndex >= totebags.length){
-                    nextIndex = 0;
-                }
+        for (let i = 0; i < totebags.length; i++) {
+            if (String(totebags[i]._id) === id) {
+                const clone = JSON.parse(JSON.stringify(totebags[i]));
+                const prevIndex = i - 1 < 0 ? totebags.length - 1 : i - 1;
+                const nextIndex = i + 1 >= totebags.length ? 0 : i + 1;
                 clone.index = i;
                 clone.nextIndex = nextIndex;
                 clone.prevIndex = prevIndex;
                 clone.totalBags = totebags.length;
-
                 return res.status(200).json(clone);
             }
         }
-    });
-
+        res.status(404).json('Not found');
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal Server Error');
+    }
 });
 
 // get a single bag's json
-router.get('/data/tote/:id', function(req, res){
-    var toteToUpdate = req.params.id;
-    
-    Totebag.findOne({_id: toteToUpdate}, function(err, totebag) {
-        if(err){
-            console.log(err);
-            return res.status(500).json("Internal Server Error");  
-        }
-        return res.status(200).json(totebag);
-    });
+router.get('/data/tote/:id', async function (req, res, next) {
+    try {
+        const totebag = await Totebag.findById(req.params.id);
+        res.status(200).json(totebag);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal Server Error');
+    }
 });
 
-/* JSON return for all sort and pagination. */
-router.get('/data/:sort/page/:page', function(req, res) {
-    var page = req.params.page - 1; //we want index
-    var sort = req.params.sort;
-    var loadSize = 24;
-
-    var sortAttribute = getSortAttributeNextFromSort(sort);
-
-    Totebag.find({},null,{
-        skip: page * loadSize,
-        limit: loadSize,
-        sort: sortAttribute
-    }, function(err, totebags) {
-        if(err) {
-          console.log(err);
-          return res.status(500).json("Internal Server Error");  
-        }
-        return res.status(200).json(totebags);
-    });
+/* Paginated JSON list for a sort. */
+router.get('/data/:sort/page/:page', async function (req, res, next) {
+    try {
+        const page = (parseInt(req.params.page, 10) || 1) - 1;
+        const loadSize = 24;
+        const sortAttribute = getSortAttributeNextFromSort(req.params.sort);
+        const totebags = await Totebag.find({}, null, {
+            skip: page * loadSize,
+            limit: loadSize,
+            sort: sortAttribute
+        });
+        res.status(200).json(totebags);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json('Internal Server Error');
+    }
 });
-
-// router.get('*', function(req, res){
-//     handle404(req, res);
-// });
-
 
 module.exports = router;

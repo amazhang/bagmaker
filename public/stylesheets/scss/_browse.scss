@@ -2,6 +2,66 @@
     background-color: $lightestGrey;
 }
 
+// Empty state — shown when there are no totes yet.
+.empty-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; // let clicks through except on the button
+
+    &.hidden {
+        display: none;
+    }
+
+    .empty-state-inner {
+        text-align: center;
+        padding: 0 $body-padding;
+        pointer-events: auto;
+    }
+
+    .empty-state-title {
+        font-size: 28px;
+        font-weight: 400;
+        color: $darkGrey;
+        margin: 0 0 12px 0;
+        letter-spacing: 0.02em;
+    }
+
+    .empty-state-msg {
+        font-size: 14px;
+        color: $button-text;
+        margin: 0 0 32px 0;
+        letter-spacing: 0.05em;
+    }
+
+    .create {
+        display: inline-block;
+        button.text {
+            background-color: $fadedRed;
+            color: #fff;
+            border: 0;
+            cursor: pointer;
+            height: $button-size;
+            line-height: $button-size;
+            padding: 0 $body-padding;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            @include prefix (border-radius, #{$button-size * 0.5});
+            @include prefix (transition, 0.2s $easing-curve);
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+}
+
 .tote-grid-element{
     &.red button.heart-outer-wrap {
         .heart-wrap .heart .inner-heart{
@@ -127,8 +187,14 @@ button.heart-outer-wrap{
         height: 100%;
 
         svg{
-            width: 100%;
-            height: 100%;
+            width: 50%;
+            height: 50%;
+            top: 50%;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            transform: translateY(-50%);
         }
 
         .inner-heart{
@@ -323,7 +389,6 @@ button.heart-outer-wrap{
 
         .heart svg path{
             @include prefix (transition, 0.3s $easing-curve);
-            @include prefix (transform, translate3d(12%, 8%, 0) scale(0.65));
         }
     }
     .tote-wrap{
