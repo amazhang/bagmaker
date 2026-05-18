@@ -3,6 +3,25 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Totebag = mongoose.model('Totebag');
 
+// Mongoose's ValidationError has a .errors object whose keys are the field
+// paths that failed. Surfacing those to the client lets the UI tell the user
+// what was wrong without leaking internal stack traces.
+function validationErrorBody(err) {
+    if (err && err.name === 'ValidationError') {
+        return {
+            error: 'ValidationError',
+            details: Object.keys(err.errors).reduce((acc, key) => {
+                acc[key] = err.errors[key].message;
+                return acc;
+            }, {})
+        };
+    }
+    if (err && err.name === 'StrictModeError') {
+        return { error: 'UnknownField', details: err.message };
+    }
+    return null;
+}
+
 /* GET New tote page. */
 router.get('/newtote', function (req, res) {
     res.render('newtote', { title: 'Create a Tote / Totebag Maker / Huge inc.' });
@@ -22,10 +41,12 @@ router.post('/createtote', async function (req, res) {
 
         const newtote = new Totebag(req.body);
         await newtote.save();
-        res.send({ res: 'Success' });
+        res.send({ res: 'Success', id: newtote._id });
     } catch (err) {
-        console.error(err);
-        res.status(500).json(err);
+        const body = validationErrorBody(err);
+        if (body) return res.status(400).json(body);
+        console.error('[createtote] unexpected error:', err);
+        res.status(500).json({ error: 'InternalServerError' });
     }
 });
 
@@ -43,14 +64,34 @@ router.get('/deletetote/:id', async function (req, res) {
     }
 });
 
-/* UPDATE to updatetote */
+/* UPDATE to updatetote
+ *
+ * NOTE: this endpoint still lets a caller change any field on any tote,
+ * which is a trust problem on its own — addressed in the Phase 3 likes
+ * overhaul. For now, at least we run validators on update so the same
+ * length/coordinate/enum rules apply.
+ */
 router.put('/updatetote/:id', async function (req, res) {
     try {
-        await Totebag.findOneAndUpdate({ _id: req.params.id }, req.body);
+        // Strip server-managed fields from the incoming body so a malicious
+        // client can't bump likes/views or rewrite the timestamp.
+        const update = { ...req.body };
+        delete update.likes;
+        delete update.views;
+        delete update.timestamp;
+        delete update._id;
+        delete update.__v;
+
+        await Totebag.findOneAndUpdate({ _id: req.params.id }, update, {
+            runValidators: true,
+            context: 'query'
+        });
         res.send({ res: 'Success' });
     } catch (err) {
-        console.error(err);
-        res.status(500).json('Internal Server Error');
+        const body = validationErrorBody(err);
+        if (body) return res.status(400).json(body);
+        console.error('[updatetote] unexpected error:', err);
+        res.status(500).json({ error: 'InternalServerError' });
     }
 });
 

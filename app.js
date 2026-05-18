@@ -23,36 +23,9 @@ mongoose
     });
 
 // ---- Mongoose model -----------------------------------------------------
-// Registered here so it's available to any router that does
-// mongoose.model('Totebag') later.
-const Totebag = mongoose.model(
-    'Totebag',
-    new mongoose.Schema({
-        color: String,
-        likes: { type: [Number], index: true },
-        views: Number,
-        size: String,
-        timestamp: { type: [Date], index: true },
-        textfields: [
-            {
-                text: String,
-                x: Number,
-                y: Number,
-                domid: String,
-                leading: Number,
-                kerning: Number,
-                fontSize: Number,
-                justify: String,
-                strikethrough: String,
-                width: String
-            }
-        ]
-    })
-);
-
-Totebag.schema.path('color').validate(function (value) {
-    return /red|black|white/i.test(value);
-}, 'Invalid color');
+// Registering by require() so any router using mongoose.model('Totebag')
+// continues to work. Schema + validation lives in models/Totebag.js.
+require('./models/Totebag');
 
 // ---- Routers ------------------------------------------------------------
 const routes = require('./routes/index');
@@ -75,9 +48,11 @@ try {
 }
 
 app.use(logger('dev'));
-// body-parser is now built into express (since 4.16).
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// body-parser is now built into express (since 4.16). 20kb is plenty for a
+// tote (typical payloads are <2kb); rejects oversized POSTs early so attackers
+// can't make us parse megabytes of JSON.
+app.use(express.json({ limit: '20kb' }));
+app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
