@@ -214,7 +214,38 @@ $(document).ready(function(){
         newBag.updateTextAreaSize( $field.find("textarea") );
     }
 
-    // //manages dragging only the text-wrap tool, for Y axis only.
+    // Computes the allowed Y range for a field within its textfields-wrap.
+    //
+    // The wrap uses content-box sizing with 10% padding, and the field is
+    // absolutely positioned relative to the wrap's padding box. So the field
+    // can validly travel from y=0 (top edge of padding box) all the way to
+    // y = paddingBoxHeight - fieldOuterHeight (so the field's bottom sits at
+    // the wrap's outer bottom edge).
+    //
+    // Reading getBoundingClientRect avoids stale values mid-animation —
+    // important because `updateTextAreaSize` Tween-animates the field height
+    // for 100ms whenever you type or change the font size.
+    function computeDragBounds($field) {
+        var fieldRect = $field[0].getBoundingClientRect();
+        var wrapEl = $field.parents(".textfields-wrap")[0];
+        var wrapRect = wrapEl.getBoundingClientRect();
+        return {
+            // Container's full inner area, padding included.
+            containerHeight: wrapRect.height,
+            // Field's true rendered height.
+            fieldHeight: fieldRect.height
+        };
+    }
+
+    function clampDragY(targetPx, $field) {
+        var b = computeDragBounds($field);
+        var maxY = Math.max(0, b.containerHeight - b.fieldHeight);
+        if (targetPx < 0) return 0;
+        if (targetPx > maxY) return maxY;
+        return targetPx;
+    }
+
+    // manages dragging only the text-wrap tool, for Y axis only.
     $(document).hammer().on("drag", ".editable-field, editable-field .corner", function(e){
         if ( $(e.target).parents(".text-controls").length === 1) {
             return;
@@ -230,29 +261,22 @@ $(document).ready(function(){
         if ($(this).hasClass("corner")){
             $field = $(this).parents(".editable-field");
         }
-        
+
         if (e.gesture.direction === "up" || e.gesture.direction === "down"){
             var dragDist = e.gesture.deltaY;
             var index = $field.attr("id");
-            var parentFontSize = parseInt($field.parents(".bag-body").css("font-size"));
+            // parseFloat to keep sub-pixel accuracy; the bag-body font-size is
+            // bagWidth/2 which is often fractional.
+            var parentFontSize = parseFloat($field.parents(".bag-body").css("font-size"));
 
             var tf = _.findWhere(newBag.data.textfields, { "domid" : index });
-            
-            // read it in pixels
             var amountMoved = tf.y * parentFontSize;
 
-            // if user is trying to drag above tote, cap at top of tote
-            var dragAmt = dragDist + amountMoved;
-            if (dragAmt < 0){
-                dragAmt = 0;
-            }
-            else if ((dragAmt + $field.height() > $field.parents(".textfields-wrap").height()) ){
-                dragAmt = $field.parents(".textfields-wrap").height() - $field.height();
-            }
+            var dragAmt = clampDragY(dragDist + amountMoved, $field);
             TweenLite.to($field, 0, { y : dragAmt + "px" });
         }
-        
     });
+
     $(document).hammer().on("dragend", ".editable-field, editable-field .corner", function(e){
         if ( $(e.target).parents(".text-controls").length === 1) {
             return;
@@ -272,22 +296,14 @@ $(document).ready(function(){
         if (e.gesture.direction === "up" || e.gesture.direction === "down"){
             var dragDist = e.gesture.deltaY;
             var index = $field.attr("id");
-            var parentFontSize = parseInt($field.parents(".bag-body").css("font-size"));
+            var parentFontSize = parseFloat($field.parents(".bag-body").css("font-size"));
 
             var tf = _.findWhere(newBag.data.textfields, { "domid" : index });
-            
-            // read it in pixels
             var amountMoved = tf.y * parentFontSize;
 
-            var dragAmt = dragDist + amountMoved;
-            if (dragAmt < 0) {
-                dragAmt = 0;
-            }
-            else if ((dragAmt + $field.height() > $field.parents(".textfields-wrap").height()) ){
-                dragAmt = $field.parents(".textfields-wrap").height() - $field.height();
-            }
+            var dragAmt = clampDragY(dragDist + amountMoved, $field);
 
-            // save it in ems
+            // save it in ems (relative to bag-body font-size, which is bagWidth/2)
             tf.y = dragAmt / parentFontSize;
         }
     });
