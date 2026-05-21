@@ -446,3 +446,125 @@ button.heart-outer-wrap {
         padding-bottom: 100%;
     }
 }
+
+// ---- Phase 3 baseline styles ---------------------------------------------
+// Functional only. Anthony will take final styling passes here.
+
+// Like-count badge on each grid tote. Sits inside the tote-grid-element,
+// outside the bag itself, so it doesn't compete with the bag's text.
+.tote-grid-element .like-count {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    z-index: 2;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    color: $darkGrey;
+    pointer-events: none;
+}
+
+// Like-count badge on the view-page (carousel). Anthony will reposition
+// alongside the heart in the final pass.
+.view-controls .like-count.view-like-count {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: $darkGrey;
+}
+
+// Window picker for the popular sort. Custom button + menu, with a hidden
+// native <select> behind it that drives the same state for a11y. Visible
+// only when sort=popular (.hidden class flipped from JS).
+.window-picker {
+    position: relative;
+    display: inline-block;
+    margin: 0 12px;
+
+    &.hidden {
+        display: none;
+    }
+
+    .window-picker-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: $button-text;
+        margin-right: 6px;
+    }
+
+    .window-picker-button {
+        background: transparent;
+        border: 1px solid $button-text;
+        color: $darkGrey;
+        font: inherit;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 4px 28px 4px 10px;
+        cursor: pointer;
+        position: relative;
+        min-width: 110px;
+        text-align: left;
+        @include prefix(border-radius, 14px);
+
+        .window-picker-caret {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid $darkGrey;
+            transform: translateY(-50%);
+        }
+    }
+
+    .window-picker-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin: 4px 0 0 0;
+        padding: 4px 0;
+        list-style: none;
+        min-width: 140px;
+        background: #fff;
+        border: 1px solid $button-text;
+        z-index: 10;
+        display: none;
+        @include prefix(border-radius, 4px);
+    }
+
+    &.open .window-picker-menu {
+        display: block;
+    }
+
+    .window-picker-item {
+        padding: 6px 14px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: $darkGrey;
+        cursor: pointer;
+
+        &:hover {
+            background: $lightestGrey;
+        }
+
+        &.sel {
+            font-weight: 600;
+        }
+    }
+
+    // Hide the native select offscreen — kept for a11y / form semantics.
+    .window-picker-native {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 1px;
+        height: 1px;
+        left: -9999px;
+    }
+}

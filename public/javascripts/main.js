@@ -14,100 +14,98 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m);
 ga('create', 'UA-58975311-1', 'auto');
 
 // Likes API
+//
+// Phase 3 rewrite (2026): used to track likes client-side via $.cookie("likes")
+// and PUT the whole tote back via /totes/updatetote (which let anyone overwrite
+// anyone else's tote). Now identity is the httpOnly bm_uid cookie set server-
+// side, and like/unlike call dedicated POST/DELETE endpoints.
+//
+// We keep the userLikes array + indexOf() helper so the rest of the legacy
+// jQuery code (browse.js, view.js) doesn't need surgery — they still ask
+// "is this tote liked by the current user?" via likes.indexOf(toteID). We
+// just seed userLikes from the server's likedByMe field instead of a cookie.
 var likes = {
     userLikes : [],
+    // Backwards-compat shim. Server identity is now in the httpOnly bm_uid
+    // cookie — there's nothing to fetch client-side. Left as a no-op so old
+    // callsites (browse.js $(document).ready) don't break.
     fetchUserLikes : function(){
-        var userLikes = $.cookie("likes");
-        likes.userLikes = userLikes.split(",");
-
-        // catch a weird bug.
-        var indexOfBlank = likes.userLikes.indexOf("");
-        if (indexOfBlank !== -1){
-            likes.userLikes.splice(indexOfBlank, 1)
+        // no-op
+    },
+    // Call when tote JSON comes back from a /data/* endpoint. Each tote has
+    // a server-set `likedByMe` boolean — fold that into our cache so the
+    // existing UI code (which asks likes.indexOf(toteID)) keeps working.
+    seedFromTotes : function(totesArray){
+        if (!totesArray) return;
+        for (var i = 0; i < totesArray.length; i++){
+            var t = totesArray[i];
+            if (t && t._id && t.likedByMe && likes.userLikes.indexOf(t._id) === -1){
+                likes.userLikes.push(t._id);
+            }
         }
-
-        // refresh their likes every time they come to the site, causing infinitely long saved cookies
-        $.cookie("likes", likes.userLikes.toString(), { expires : 30 });
     },
     likeBag : function(toteID){
         if (likes.indexOf(toteID) > -1){
             return false;
         }
-        else{
-            likes.userLikes.push(toteID);
-            // sets the cookie to not expire for 30 days.
-            $.cookie("likes", likes.userLikes.toString(), { expires : 30 });
+        // Optimistic UI: assume server accepts.
+        likes.userLikes.push(toteID);
 
-            // synchronizing the grid if like is coming from view page.
-            if ( $(".view-carousel").hasClass("on") ){
-                var toteIndex = parseInt($(".view-carousel").attr("data-index"));
-                likes.favorite($(".browse-tote-wrap .tote-grid-element").eq(toteIndex).find(".heart-outer-wrap"));
-            }
-
-            browse.getToteObj(toteID, function(tote, bagIndex){
-                tote.likes = parseInt(tote.likes) + 1;
-
-                // sort of hacky, the only way i know how to update a tote. you aren't allowed
-                // to update it with the sacred _id variable already assigned.
-                var clone = _.extend({}, tote);
-                delete clone._id;
-                delete clone.swingTimer;
-                delete clone.stopTimer;
-
-                // use ajax to post tote to db
-                $.ajax({
-                    type: 'PUT',
-                    data: JSON.stringify(clone),
-                    url: '/totes/updatetote/' + toteID,
-                    contentType:"application/json; charset=utf-8",
-                    dataType: 'json'
-                }).done(function( response, status ){
-
-                }).fail(function( response, status ){
-
-                });
-            });
+        // Sync heart state across the view page <-> grid like the old code did.
+        if ( $(".view-carousel").hasClass("on") ){
+            var toteIndex = parseInt($(".view-carousel").attr("data-index"));
+            likes.favorite($(".browse-tote-wrap .tote-grid-element").eq(toteIndex).find(".heart-outer-wrap"));
         }
+
+        $.ajax({
+            type: 'POST',
+            url: '/totes/' + toteID + '/like',
+            dataType: 'json'
+        }).done(function(response){
+            // Sync the in-memory tote's count + any visible badge.
+            likes.updateLikeCount(toteID, response.likeCount);
+        }).fail(function(){
+            // Roll back the optimistic mark.
+            var idx = likes.userLikes.indexOf(toteID);
+            if (idx > -1) likes.userLikes.splice(idx, 1);
+            $(".tote-wrap[data-id='" + toteID + "']").parents(".tote-grid-element").find(".heart-outer-wrap").removeClass("favorited");
+            $(".view-carousel[data-display='" + toteID + "'] .heart-outer-wrap").removeClass("favorited");
+        });
     },
     unlikeBag : function(toteID){
         var toteIndex = likes.indexOf(toteID);
+        if (toteIndex === -1) return false;
 
-        if (toteIndex > -1){
-            likes.userLikes.splice(toteIndex, 1);
-            $.cookie("likes", likes.userLikes.toString(), { expires : 30 });
+        // Optimistic UI.
+        likes.userLikes.splice(toteIndex, 1);
 
-            // synchronizing the grid if like is coming from view page.
-            if ( $(".view-carousel").hasClass("on") ){
-                var toteIndex = parseInt($(".view-carousel").attr("data-index"));
-                likes.unfavorite($(".browse-tote-wrap .tote-grid-element").eq(toteIndex).find(".heart-outer-wrap"));
-            }
-
-            browse.getToteObj(toteID, function(tote, bagIndex){
-                tote.likes = parseInt(tote.likes) - 1;
-
-                // sort of hacky, the only way i know how to update a tote. you aren't allowed
-                // to update it with the sacred _id variable already assigned.
-                var clone = _.extend({}, tote);
-                delete clone._id;
-                delete clone.swingTimer;
-                delete clone.stopTimer;
-
-                // use ajax to post tote to db
-                $.ajax({
-                    type: 'PUT',
-                    data: JSON.stringify(clone),
-                    url: '/totes/updatetote/' + toteID,
-                    contentType:"application/json; charset=utf-8",
-                    dataType: 'json'
-                }).done(function( response, status ){
-
-                }).fail(function( response, status ){
-
-                });
-            });
+        if ( $(".view-carousel").hasClass("on") ){
+            var idx = parseInt($(".view-carousel").attr("data-index"));
+            likes.unfavorite($(".browse-tote-wrap .tote-grid-element").eq(idx).find(".heart-outer-wrap"));
         }
-        else{
-            return false;
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/totes/' + toteID + '/like',
+            dataType: 'json'
+        }).done(function(response){
+            likes.updateLikeCount(toteID, response.likeCount);
+        }).fail(function(){
+            // Roll back.
+            if (likes.userLikes.indexOf(toteID) === -1) likes.userLikes.push(toteID);
+        });
+    },
+    // Push a fresh server-blessed count into the in-memory tote + DOM badge.
+    updateLikeCount : function(toteID, n){
+        if (typeof browse !== "undefined" && browse.toteBags){
+            var tote = _.findWhere(browse.toteBags, { "_id" : toteID });
+            if (tote) tote.likeCount = n;
+        }
+        // Grid badge — lives as a sibling of .tote-wrap inside .tote-grid-element.
+        $(".tote-wrap[data-id='" + toteID + "']").closest(".tote-grid-element").find(".like-count").text(n);
+        // View-page badge — only matters if this tote is centered in the carousel.
+        if ($(".view-carousel").attr("data-display") === toteID){
+            $(".view-like-count").text(n);
         }
     },
     indexOf : function(toteID){
@@ -550,9 +548,8 @@ function scrollHelper(){
 }
 
 $(document).ready(function(){
-    if ($.cookie("likes") === undefined){
-        $.cookie("likes", "");
-    }
+    // Phase 3: identity is now the httpOnly bm_uid cookie set by the server.
+    // The old client-side "likes" cookie is intentionally not migrated.
 
     $(document).hammer().on("tap", "button.close.createpage, button.close.createpage span", function(){
         window.location.href = "/";

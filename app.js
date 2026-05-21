@@ -7,6 +7,7 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 // ---- Database connection ------------------------------------------------
 // MONGODB_URI must be set in the environment. Locally: in .env file.
@@ -22,10 +23,11 @@ mongoose
         // until the DB is reachable.
     });
 
-// ---- Mongoose model -----------------------------------------------------
-// Registering by require() so any router using mongoose.model('Totebag')
-// continues to work. Schema + validation lives in models/Totebag.js.
+// ---- Mongoose models ----------------------------------------------------
+// Registering by require() so any router using mongoose.model(...) continues
+// to work. Schemas + validation live in models/.
 require('./models/Totebag');
+require('./models/Like');
 
 // ---- Routers ------------------------------------------------------------
 const routes = require('./routes/index');
@@ -54,6 +56,30 @@ app.use(logger('dev'));
 app.use(express.json({ limit: '20kb' }));
 app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 app.use(cookieParser());
+
+// ---- bm_uid cookie -----------------------------------------------------
+// Server-set, httpOnly browser identity used by the likes system. We do not
+// trust client-supplied identity for likes (the original 2015 design did,
+// which is part of what Phase 3 is fixing). One UUID per browser, ~2y life.
+//
+// req.bmUid is set on EVERY request so downstream code can rely on it.
+const TWO_YEARS_MS = 1000 * 60 * 60 * 24 * 365 * 2;
+app.use(function (req, res, next) {
+    let uid = req.cookies && req.cookies.bm_uid;
+    if (!uid) {
+        uid = crypto.randomUUID();
+        res.cookie('bm_uid', uid, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: TWO_YEARS_MS,
+            path: '/'
+        });
+    }
+    req.bmUid = uid;
+    next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);

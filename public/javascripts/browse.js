@@ -3,15 +3,24 @@ var browse = {
     currPage : 1,
     numPerPage : 24,
     currSort : "latest",
+    currWindow : "all", // Phase 3: time-window filter for popular sort
     loadedAll : false,
     totalBags : -1,
     currentlyBuilding : false,
 
+    // Build the ?window=... query string for popular-sort requests.
+    // Returns "" for non-popular sorts so other endpoints stay unchanged.
+    windowQS : function(){
+        if (browse.currSort !== "popular") return "";
+        return "?window=" + encodeURIComponent(browse.currWindow);
+    },
+
     getToteObj : function(toteID, callback){
         var tote = _.findWhere(browse.toteBags, {"_id" : toteID});
 
-        if (typeof tote === "undefined"){    
-            $.getJSON('/data/' + browse.currSort + '/tote/' + toteID, function( data ){
+        if (typeof tote === "undefined"){
+            $.getJSON('/data/' + browse.currSort + '/tote/' + toteID + browse.windowQS(), function( data ){
+                likes.seedFromTotes([data]);
                 callback(data, -1);
             });
         }
@@ -25,7 +34,8 @@ var browse = {
         if (browse.toteBags.length >= index)
             callback([browse.toteBags[index]]);
         else{
-            $.getJSON("/data/" + browse.currSort + "/" + index, function( data ){
+            $.getJSON("/data/" + browse.currSort + "/" + index + browse.windowQS(), function( data ){
+                likes.seedFromTotes(data);
                 callback(data);
             });
         }
@@ -47,8 +57,15 @@ var browse = {
         if (newSort !== browse.currSort){
             browse.currSort = newSort;
             browse.currPage = 1;
-            window.history.pushState("html", "Title", "/" + newSort);
+            // Phase 3: include window query string when switching to popular.
+            var url = "/" + newSort;
+            if (newSort === "popular" && browse.currWindow !== "all"){
+                url += "?window=" + encodeURIComponent(browse.currWindow);
+            }
+            window.history.pushState("html", "Title", url);
             $("head title").html(sortName + " | Totebag Maker | Huge inc.");
+
+            browse.refreshWindowPicker();
 
             browse.animateOut(function(){
                 $(".browse-tote-wrap").empty();
@@ -65,7 +82,7 @@ var browse = {
                 });
             });
         }
-        
+
     },
     gridOrderHelper : function(input){
         var gridWidth = $(".tote-grid-element").width();
@@ -162,8 +179,10 @@ var browse = {
         browse.currentlyBuilding = true;
 
         if (browse.toteBags === null){
-            $.getJSON('/data/' + browse.currSort + '/page/' + browse.currPage, function( data ){
-                // sort it by time - newest
+            $.getJSON('/data/' + browse.currSort + '/page/' + browse.currPage + browse.windowQS(), function( data ){
+                // Phase 3: server tells us which of these the current bm_uid
+                // liked. Push them into the in-memory cache so indexOf works.
+                likes.seedFromTotes(data);
                 browse.toteBags = data;
 
                 // No totes at all? Show empty state and bail out.
@@ -190,12 +209,13 @@ var browse = {
             }
 
             browse.currPage = browse.currPage + 1;
-            $.getJSON('/data/' + browse.currSort + '/page/' + browse.currPage, function( data ){
+            $.getJSON('/data/' + browse.currSort + '/page/' + browse.currPage + browse.windowQS(), function( data ){
                 // we need to check data to see if its [] and then flag it as the end.
                 if (data.length < browse.numPerPage){
                     browse.loadedAll = true;
                 }
 
+                likes.seedFromTotes(data);
                 browse.toteBags = browse.toteBags.concat(data);
                 if (typeof callback !== "undefined"){
                     callback();
@@ -233,15 +253,20 @@ var browse = {
                 }
 
                 heartWrap += "<div class='heart-circle'></div>" +
-                                "<div class='heart'>" + 
+                                "<div class='heart'>" +
                                     '<svg width="32px" height="29px" viewBox="15 18 36 33"><path d="M39.9504969,20.4285714 C37.4437267,20.4285714 34.8843478,21.6982109 33,24.6490918 C31.1163354,21.6982109 28.5562733,20.4292823 26.0495031,20.4285714 C21.5825466,20.4285714 17.2857143,24.4592857 17.2857143,30.186881 C17.2857143,36.2365068 22.5158385,40.5508639 26.4539752,43.8067143 C30.5410559,47.1905238 31.688882,47.9113605 33,49.2812347 C34.311118,47.9113605 35.4589441,47.1905238 39.5460248,43.8067143 C43.4841615,40.5508639 48.7142857,36.2365068 48.7142857,30.186881 C48.7142857,24.4592857 44.4167702,20.4285714 39.9504969,20.4285714"></path></svg>'+
                                 "</div>" +
                             "</div></button>";
 
+                // Phase 3: like-count badge. Server provides .likeCount on each
+                // tote; default to 0 for safety. Anthony owns the visual pass.
+                var likeCount = (typeof toteObj.bags[0].likeCount === "number") ? toteObj.bags[0].likeCount : 0;
+                var likeBadge = "<div class='like-count'>" + likeCount + "</div>";
+
                 var $tote = $("<div />", {
                     //id : "tote-" + tote._id,
                     class : "tote-grid-element start " + toteObj.bags[0].color,
-                    html :  heartWrap + rendered
+                    html :  heartWrap + likeBadge + rendered
                 });
                 $tote.appendTo(".browse-page.content .browse-tote-wrap");
 
@@ -273,12 +298,13 @@ var browse = {
     // positions the view carousel with the $tote centered.
     view : function(toteId){
         // grab all the data.
-        var currJsonURL = "/data/" + browse.currSort + "/tote/" + toteId;
+        var currJsonURL = "/data/" + browse.currSort + "/tote/" + toteId + browse.windowQS();
         var toteObjArray = [];
         var toteIdArray = [];
         var currBag, nextBag, prevBag;
 
         $.getJSON(currJsonURL, function( data ){
+            likes.seedFromTotes([data]);
             // toteIdArray.push(toteId);
             currBag = {bags : [data]};
             $(".view-controls .heart-outer-wrap").attr("class", "heart-outer-wrap " + data.color);
@@ -360,6 +386,10 @@ var browse = {
                 $("head title").html("View Tote | Totebag Maker | Huge inc.");
                 $("body").addClass("lock-scroll");
                 $(".view-carousel").attr("data-display", toteId);
+                // Phase 3: sync the view-page like count badge on initial open.
+                if (typeof viewPage !== "undefined" && viewPage.updateLikes){
+                    viewPage.updateLikes();
+                }
             });
         }
     },
@@ -604,7 +634,22 @@ var browse = {
         browse.currSort = $("#sort").html();
         $("#sort").remove();
 
-        window.history.pushState("html", "Title", "/" + browse.currSort);
+        // Phase 3: read ?window= from the URL (popular only).
+        if (browse.currSort === "popular"){
+            var m = window.location.search.match(/[?&]window=([^&]+)/);
+            if (m){
+                var w = decodeURIComponent(m[1]);
+                if (["day","week","month","year","all"].indexOf(w) !== -1){
+                    browse.currWindow = w;
+                }
+            }
+        }
+
+        var url = "/" + browse.currSort;
+        if (browse.currSort === "popular" && browse.currWindow !== "all"){
+            url += "?window=" + encodeURIComponent(browse.currWindow);
+        }
+        window.history.pushState("html", "Title", url);
 
         // update the UI on the sort button.
         var sortName;
@@ -613,9 +658,54 @@ var browse = {
         else if (browse.currSort === "popular") { sortName = "Popular"; }
         else if (browse.currSort === "views") { sortName = "Most Views"; }
         else { sortName = "Latest"; }
-        
+
         $("nav .sort .selected-sort .name").html(sortName);
         $(".sort-option[data-name='" + browse.currSort + "']").addClass("sel");
+
+        browse.refreshWindowPicker();
+    },
+
+    // Phase 3: show window picker only on popular; mirror state across the
+    // custom UI and the hidden native <select>.
+    refreshWindowPicker : function(){
+        var $picker = $(".window-picker");
+        if (browse.currSort === "popular"){
+            $picker.removeClass("hidden").attr("aria-hidden", "false");
+        } else {
+            $picker.addClass("hidden").attr("aria-hidden", "true");
+            return;
+        }
+        var w = browse.currWindow;
+        var $item = $picker.find(".window-picker-item[data-window='" + w + "']");
+        var label = $item.text() || "All time";
+        $picker.find(".window-picker-current").text(label);
+        $picker.find(".window-picker-item").removeClass("sel");
+        $item.addClass("sel");
+        $picker.find(".window-picker-native").val(w);
+    },
+
+    // Phase 3: apply a new time window. Reloads all data for popular sort.
+    setWindow : function(newWindow){
+        if (!newWindow || newWindow === browse.currWindow) return;
+        if (["day","week","month","year","all"].indexOf(newWindow) === -1) return;
+
+        browse.currWindow = newWindow;
+        var url = "/popular";
+        if (newWindow !== "all") url += "?window=" + encodeURIComponent(newWindow);
+        window.history.pushState("html", "Title", url);
+
+        browse.refreshWindowPicker();
+        browse.currPage = 1;
+        browse.loadedAll = false;
+
+        browse.animateOut(function(){
+            $(".browse-tote-wrap").empty();
+            browse.toteBags = null;
+            // Keep cached likedByMe; just clear count + re-seed on fetch.
+            browse.loadBags(function(){
+                browse.buildBagGrid();
+            });
+        });
     }
 };
 
@@ -659,6 +749,38 @@ $(document).ready(function(){
     });
     $(".sort ul li, .sort .sort-option").hammer().on("tap", function(){
         browse.sort($(this));
+    });
+
+    // Phase 3: window picker (popular sort only). Button toggles a styled
+    // menu; the hidden native <select> is also wired so keyboard / screen
+    // readers can change the value too.
+    $(document).on("click", ".window-picker-button", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var $picker = $(this).closest(".window-picker");
+        var open = $picker.hasClass("open");
+        $picker.toggleClass("open", !open);
+        $(this).attr("aria-expanded", String(!open));
+    });
+
+    $(document).on("click", ".window-picker-item", function(e){
+        e.preventDefault();
+        var w = $(this).attr("data-window");
+        $(this).closest(".window-picker").removeClass("open");
+        $(this).closest(".window-picker").find(".window-picker-button").attr("aria-expanded", "false");
+        browse.setWindow(w);
+    });
+
+    $(document).on("change", ".window-picker-native", function(){
+        browse.setWindow($(this).val());
+    });
+
+    // Close the styled menu on outside click.
+    $(document).on("click", function(e){
+        if ($(e.target).closest(".window-picker").length === 0){
+            $(".window-picker").removeClass("open");
+            $(".window-picker-button").attr("aria-expanded", "false");
+        }
     });
 
     $(document).hammer().on("tap, release", "button.heart-outer-wrap", function(e){

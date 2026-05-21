@@ -1761,6 +1761,107 @@ button.heart-outer-wrap.black .heart-wrap .heart .inner-heart:after, button.hear
     padding-bottom: 100%;
   }
 }
+.tote-grid-element .like-count {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: #3c3c3c;
+  pointer-events: none;
+}
+
+.view-controls .like-count.view-like-count {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3c3c3c;
+}
+
+.window-picker {
+  position: relative;
+  display: inline-block;
+  margin: 0 12px;
+}
+.window-picker.hidden {
+  display: none;
+}
+.window-picker .window-picker-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a3a3a3;
+  margin-right: 6px;
+}
+.window-picker .window-picker-button {
+  background: transparent;
+  border: 1px solid #a3a3a3;
+  color: #3c3c3c;
+  font: inherit;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 28px 4px 10px;
+  cursor: pointer;
+  position: relative;
+  min-width: 110px;
+  text-align: left;
+  border-radius: 14px;
+}
+.window-picker .window-picker-button .window-picker-caret {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #3c3c3c;
+  transform: translateY(-50%);
+}
+.window-picker .window-picker-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 4px 0 0 0;
+  padding: 4px 0;
+  list-style: none;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid #a3a3a3;
+  z-index: 10;
+  display: none;
+  border-radius: 4px;
+}
+.window-picker.open .window-picker-menu {
+  display: block;
+}
+.window-picker .window-picker-item {
+  padding: 6px 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #3c3c3c;
+  cursor: pointer;
+}
+.window-picker .window-picker-item:hover {
+  background: #f8f8f8;
+}
+.window-picker .window-picker-item.sel {
+  font-weight: 600;
+}
+.window-picker .window-picker-native {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  left: -9999px;
+}
+
 @media screen and (max-width: 640px) {
   body .content.browse-page .view-carousel .view-controls {
     top: auto;

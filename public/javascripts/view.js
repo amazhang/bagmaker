@@ -186,7 +186,7 @@ var viewPage = {
     },
     updateLikes : function(){
         var toteID = $(".view-carousel").attr("data-display");
-        
+
         // user likes it and the button isn't already liked
         if (likes.indexOf(toteID) > -1 && !$(".view-controls .heart-outer-wrap").hasClass("favorited") ){
             likes.favorite($(".view-controls .heart-outer-wrap"));
@@ -194,6 +194,13 @@ var viewPage = {
         // user doesnt like it and the button is liked.
         else if (likes.indexOf(toteID) === -1 && $(".view-controls .heart-outer-wrap").hasClass("favorited")) {
             likes.unfavorite($(".view-controls .heart-outer-wrap"));
+        }
+
+        // Phase 3: keep the view-page like-count badge in sync with the centered tote.
+        if (typeof browse !== "undefined" && browse.toteBags){
+            var centered = _.findWhere(browse.toteBags, { "_id" : toteID });
+            var n = (centered && typeof centered.likeCount === "number") ? centered.likeCount : 0;
+            $(".view-like-count").text(n);
         }
     }
 };

@@ -20,6 +20,28 @@ block content
             //-     li.item(data-attr='timestamp', data-dir='desc') Latest
             //-     li.item(data-attr='timestamp', data-dir='asc') Oldest
             //-     li.item(data-attr='likes', data-dir='desc') Popular
+        //
+            Phase 3: time-window picker for the Popular sort.
+            Visible-only when sort=popular (CSS / JS hides otherwise).
+            Native <select> is hidden but kept for keyboard + a11y;
+            the styled button + menu drives the actual UI.
+        .window-picker.hidden(aria-hidden='true')
+            label.window-picker-label(for='windowSelect') Window:
+            button.window-picker-button(type='button', aria-haspopup='listbox', aria-expanded='false')
+                span.window-picker-current All time
+                span.window-picker-caret
+            ul.window-picker-menu(role='listbox')
+                li.window-picker-item(role='option', data-window='day') Today
+                li.window-picker-item(role='option', data-window='week') This week
+                li.window-picker-item(role='option', data-window='month') This month
+                li.window-picker-item(role='option', data-window='year') This year
+                li.window-picker-item.sel(role='option', data-window='all') All time
+            select.window-picker-native(id='windowSelect', name='window', aria-label='Time window')
+                option(value='day') Today
+                option(value='week') This week
+                option(value='month') This month
+                option(value='year') This year
+                option(value='all', selected='selected') All time
         .create
             button.text 
                 span.lrg New Bag
@@ -45,6 +67,7 @@ block content
                         .heart
                             svg(width="32px", height="29px", viewBox="15 18 36 33")
                                 path(d="M39.9504969,20.4285714 C37.4437267,20.4285714 34.8843478,21.6982109 33,24.6490918 C31.1163354,21.6982109 28.5562733,20.4292823 26.0495031,20.4285714 C21.5825466,20.4285714 17.2857143,24.4592857 17.2857143,30.186881 C17.2857143,36.2365068 22.5158385,40.5508639 26.4539752,43.8067143 C30.5410559,47.1905238 31.688882,47.9113605 33,49.2812347 C34.311118,47.9113605 35.4589441,47.1905238 39.5460248,43.8067143 C43.4841615,40.5508639 48.7142857,36.2365068 48.7142857,30.186881 C48.7142857,24.4592857 44.4167702,20.4285714 39.9504969,20.4285714")
+                .like-count.view-like-count 0
                 button.arrow.left
                 button.arrow.right
             button.close.text

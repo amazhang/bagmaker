@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Totebag = mongoose.model('Totebag');
+const Like = mongoose.model('Like');
 
 // Mongoose's ValidationError has a .errors object whose keys are the field
 // paths that failed. Surfacing those to the client lets the UI tell the user
@@ -53,7 +54,9 @@ router.post('/createtote', async function (req, res) {
 /* DELETE to deletetote */
 router.get('/deletetote/:id', async function (req, res) {
     try {
-        await Totebag.findByIdAndDelete(req.params.id);
+        if (mongoose.isValidObjectId(req.params.id)) {
+            await Totebag.findByIdAndDelete(req.params.id);
+        }
         res.render('index', {
             title: 'Latest | Totebag Maker | Huge inc.',
             sort: 'latest'
@@ -66,15 +69,15 @@ router.get('/deletetote/:id', async function (req, res) {
 
 /* UPDATE to updatetote
  *
- * NOTE: this endpoint still lets a caller change any field on any tote,
- * which is a trust problem on its own — addressed in the Phase 3 likes
- * overhaul. For now, at least we run validators on update so the same
- * length/coordinate/enum rules apply.
+ * Post Phase 3, likes are handled via /totes/:id/like, NOT this endpoint.
+ * This route is essentially legacy — it still exists because the client
+ * uses it for the view-count bump (which the server also ignores, since
+ * Phase 2 strips `views` here too). Kept for safety / future use, but
+ * narrowed: server-managed fields (likes/views/timestamp/_id/__v) are
+ * stripped from the body so this route can never move any of them.
  */
 router.put('/updatetote/:id', async function (req, res) {
     try {
-        // Strip server-managed fields from the incoming body so a malicious
-        // client can't bump likes/views or rewrite the timestamp.
         const update = { ...req.body };
         delete update.likes;
         delete update.views;
@@ -95,38 +98,78 @@ router.put('/updatetote/:id', async function (req, res) {
     }
 });
 
-// Validate :id by ensuring the tote exists.
-router.param('id', async function (req, res, next, id) {
+/* POST /totes/:id/like  — idempotent: same browser liking twice no-ops.
+ *
+ * Uses req.bmUid (set by app.js middleware). Returns the current likeCount
+ * so the client can sync if optimistic UI drifted.
+ *
+ * We deliberately do NOT increment Totebag.likes here — popular sorts use
+ * the Like collection directly. Keeping a denormalized counter in sync is
+ * a foot-gun (decrement-below-zero, atomicity vs the unique index) and the
+ * new sort path doesn't need it.
+ */
+router.post('/:id/like', async function (req, res) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).json({ error: 'InvalidId' });
+    }
+    if (!req.bmUid) {
+        return res.status(500).json({ error: 'MissingIdentity' });
+    }
+
     try {
-        if (!mongoose.isValidObjectId(id)) {
-            return res.render('index', {
-                title: 'Latest | Totebag Maker | Huge inc.',
-                sort: 'latest'
-            });
+        const tote = await Totebag.findById(req.params.id, { _id: 1 });
+        if (!tote) return res.status(404).json({ error: 'NotFound' });
+
+        try {
+            await Like.create({ toteId: tote._id, userCookie: req.bmUid });
+        } catch (err) {
+            // 11000 = duplicate key — already liked. That's the idempotent case.
+            if (!(err && err.code === 11000)) throw err;
         }
-        const found = await Totebag.findById(id);
-        if (!found) {
-            return res.render('index', {
-                title: 'Latest | Totebag Maker | Huge inc.',
-                sort: 'latest'
-            });
-        }
-        next();
+
+        const likeCount = await Like.countDocuments({ toteId: tote._id });
+        res.json({ liked: true, likeCount });
     } catch (err) {
-        next(err);
+        console.error('[POST /totes/:id/like] unexpected error:', err);
+        res.status(500).json({ error: 'InternalServerError' });
     }
 });
 
-/* GET a single tote */
-router.get('/:id', async function (req, res) {
+/* DELETE /totes/:id/like — idempotent: deleting a like that doesn't exist no-ops. */
+router.delete('/:id/like', async function (req, res) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).json({ error: 'InvalidId' });
+    }
+    if (!req.bmUid) {
+        return res.status(500).json({ error: 'MissingIdentity' });
+    }
+
     try {
-        const totebag = await Totebag.findById(req.params.id);
-        if (!totebag) {
-            return res.render('index', {
-                title: 'Latest | Totebag Maker | Huge inc.',
-                sort: 'latest'
-            });
+        const tote = await Totebag.findById(req.params.id, { _id: 1 });
+        if (!tote) return res.status(404).json({ error: 'NotFound' });
+
+        await Like.deleteOne({ toteId: tote._id, userCookie: req.bmUid });
+        const likeCount = await Like.countDocuments({ toteId: tote._id });
+        res.json({ liked: false, likeCount });
+    } catch (err) {
+        console.error('[DELETE /totes/:id/like] unexpected error:', err);
+        res.status(500).json({ error: 'InternalServerError' });
+    }
+});
+
+/* GET a single tote (view page) — falls through to home on invalid/missing id. */
+router.get('/:id', async function (req, res) {
+    const indexFallback = {
+        title: 'Latest | Totebag Maker | Huge inc.',
+        sort: 'latest'
+    };
+    try {
+        if (!mongoose.isValidObjectId(req.params.id)) {
+            return res.render('index', indexFallback);
         }
+        const totebag = await Totebag.findById(req.params.id);
+        if (!totebag) return res.render('index', indexFallback);
+
         res.render('index', {
             title: 'View Tote | Totebag Maker | Huge inc.',
             toteID: req.params.id,
@@ -134,10 +177,7 @@ router.get('/:id', async function (req, res) {
         });
     } catch (err) {
         console.error(err);
-        res.render('index', {
-            title: 'Latest | Totebag Maker | Huge inc.',
-            sort: 'latest'
-        });
+        res.render('index', indexFallback);
     }
 });
 
