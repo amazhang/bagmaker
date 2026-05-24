@@ -1369,74 +1369,41 @@ button.save, button.close {
   opacity: 0.9;
 }
 
-.tote-grid-element.black button.heart-outer-wrap svg path {
-  -webkit-stroke: rgba(0, 0, 0, 0.4);
-  -moz-stroke: rgba(0, 0, 0, 0.4);
-  -ms-stroke: rgba(0, 0, 0, 0.4);
-  -o-stroke: rgba(0, 0, 0, 0.4);
-  stroke: rgba(0, 0, 0, 0.4);
-}
-.tote-grid-element.black .like-count {
-  color: rgba(0, 0, 0, 0.6);
-}
-.tote-grid-element.white button.heart-outer-wrap.favorited .heart-circle {
-  background-color: #E30C12;
-}
-.tote-grid-element.white .like-count {
-  color: rgba(0, 0, 0, 0.6);
-}
-.tote-grid-element.red .like-count {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-button.heart-outer-wrap {
+.like-wrap button.heart-outer-wrap {
   padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  box-shadow: none;
 }
-button.heart-outer-wrap svg path {
-  -webkit-fill: "transparent";
-  -moz-fill: "transparent";
-  -ms-fill: "transparent";
-  -o-fill: "transparent";
-  fill: "transparent";
-  -webkit-stroke: #fff;
-  -moz-stroke: #fff;
-  -ms-stroke: #fff;
-  -o-stroke: #fff;
-  stroke: #fff;
-  stroke-width: 2px;
+.like-wrap button.heart-outer-wrap svg path {
+  fill: transparent;
+  -webkit-stroke: rgba(255, 255, 255, 0.8);
+  -moz-stroke: rgba(255, 255, 255, 0.8);
+  -ms-stroke: rgba(255, 255, 255, 0.8);
+  -o-stroke: rgba(255, 255, 255, 0.8);
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 3px;
   transition: fill 0.3s cubic-bezier(0.7, 0, 0.3, 1), stroke 0.3s cubic-bezier(0.7, 0, 0.3, 1);
 }
-button.heart-outer-wrap:hover {
+.like-wrap button.heart-outer-wrap:hover {
   opacity: 1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-button.heart-outer-wrap:hover .heart-circle {
-  background-color: #fff;
+.like-wrap button.heart-outer-wrap:hover .heart-circle {
+  background-color: rgba(255, 255, 255, 0.6);
 }
-button.heart-outer-wrap:hover:not(.favorited) svg path {
-  -webkit-fill: rgba(0, 0, 0, 0.5);
-  -moz-fill: rgba(0, 0, 0, 0.5);
-  -ms-fill: rgba(0, 0, 0, 0.5);
-  -o-fill: rgba(0, 0, 0, 0.5);
-  fill: rgba(0, 0, 0, 0.5);
-  -webkit-stroke: transparent;
-  -moz-stroke: transparent;
-  -ms-stroke: transparent;
-  -o-stroke: transparent;
+.like-wrap button.heart-outer-wrap:hover:not(.favorited) svg path {
+  fill: #3c3c3c;
+  stroke: transparent !important;
+}
+.like-wrap button.heart-outer-wrap.favorited .heart-wrap .heart {
+  transform: scale(1.15);
+}
+.like-wrap button.heart-outer-wrap.favorited .heart-wrap .heart svg path {
+  fill: rgb(255, 255, 255);
   stroke: transparent;
 }
-button.heart-outer-wrap.favorited .heart-wrap .heart {
-  transform: scale(1.2);
-}
-button.heart-outer-wrap.favorited .heart-wrap .heart svg path {
-  fill: rgb(255, 255, 255);
-  -webkit-stroke: "transparent";
-  -moz-stroke: "transparent";
-  -ms-stroke: "transparent";
-  -o-stroke: "transparent";
-  stroke: "transparent";
-}
-button.heart-outer-wrap.favorited .heart-wrap .heart-circle {
+.like-wrap button.heart-outer-wrap.favorited .heart-wrap .heart-circle {
   width: 100%;
   height: 100%;
   opacity: 1;
@@ -1444,17 +1411,18 @@ button.heart-outer-wrap.favorited .heart-wrap .heart-circle {
   width: calc(100% - 4px);
   height: -o-calc(100% - 4px);
   height: calc(100% - 4px);
-  background-color: #fa4248;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background-color: #E30C12;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset -2px -4px 16px 0 rgba(0, 0, 0, 0.1), inset 2px 4px 16px 0 rgba(255, 255, 255, 0.4), inset 1px 1px 2px 1px rgba(255, 255, 255, 0.5), inset -1px -1px 2px 1px rgba(255, 255, 255, 0.3);
 }
-button.heart-outer-wrap.white.favorited {
-  background-color: rgba(255, 255, 255, 0.5);
+.like-wrap button.heart-outer-wrap.black svg path {
+  -webkit-stroke: rgba(0, 0, 0, 0.6);
+  -moz-stroke: rgba(0, 0, 0, 0.6);
+  -ms-stroke: rgba(0, 0, 0, 0.6);
+  -o-stroke: rgba(0, 0, 0, 0.6);
+  stroke: rgba(0, 0, 0, 0.6);
 }
-button.heart-outer-wrap.white.favorited .heart-wrap .heart-circle {
-  width: -o-calc(100% - 4px);
-  width: calc(100% - 4px);
-  height: -o-calc(100% - 4px);
-  height: calc(100% - 4px);
+.like-wrap button.heart-outer-wrap.black:not(.favorited):hover .heart-circle {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .heart-wrap {
@@ -1490,10 +1458,11 @@ button.heart-outer-wrap.white.favorited .heart-wrap .heart-circle {
   left: 0;
   right: 0;
   margin: 0 auto;
-  transition: 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+  transition: background 0.3s cubic-bezier(0.7, 0, 0.3, 1);
   border-radius: 50%;
   width: 100%;
   height: 100%;
+  box-sizing: contentBox;
 }
 
 .tote-grid-element {
@@ -1638,6 +1607,13 @@ button.heart-outer-wrap.white.favorited .heart-wrap .heart-circle {
   transition: 0.3s cubic-bezier(0.7, 0, 0.3, 1);
 }
 
+.like-wrap .like-count {
+  color: #fff;
+}
+.like-wrap.black .like-count {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
 @media screen and (max-width: 1280px) {
   .content.browse-page .tote-grid-element {
     width: 33.33%;
@@ -1656,16 +1632,7 @@ button.heart-outer-wrap.white.favorited .heart-wrap .heart-circle {
     padding-bottom: 100%;
   }
 }
-.tote-grid-element .like-count {
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.25;
-  pointer-events: none;
-}
-
-.view-controls .like-count.view-like-count {
-  display: inline-block;
-  margin-right: 8px;
+.like-count {
   font-size: 18px;
   font-weight: 400;
   line-height: 1.25;
@@ -1893,44 +1860,27 @@ body .view-carousel .view-controls > * {
 body .view-carousel .view-controls > *:first-child {
   margin-left: 0;
 }
+body .view-carousel .view-controls .like-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
 body .view-carousel .view-controls .heart-outer-wrap {
   width: 65px;
   height: 65px;
 }
-body .view-carousel .view-controls .heart-outer-wrap .heart svg path {
-  -webkit-fill: rgba(0, 0, 0, 0.5);
-  -moz-fill: rgba(0, 0, 0, 0.5);
-  -ms-fill: rgba(0, 0, 0, 0.5);
-  -o-fill: rgba(0, 0, 0, 0.5);
-  fill: rgba(0, 0, 0, 0.5);
-  -webkit-stroke: transparent;
-  -moz-stroke: transparent;
-  -ms-stroke: transparent;
-  -o-stroke: transparent;
-  stroke: transparent;
+body .view-carousel .view-controls .heart-outer-wrap.black svg path {
+  -webkit-stroke: rgba(0, 0, 0, 0.4);
+  -moz-stroke: rgba(0, 0, 0, 0.4);
+  -ms-stroke: rgba(0, 0, 0, 0.4);
+  -o-stroke: rgba(0, 0, 0, 0.4);
+  stroke: rgba(0, 0, 0, 0.4);
 }
-body .view-carousel .view-controls .heart-outer-wrap:hover .heart svg path {
-  -webkit-fill: rgba(0, 0, 0, 0.7);
-  -moz-fill: rgba(0, 0, 0, 0.7);
-  -ms-fill: rgba(0, 0, 0, 0.7);
-  -o-fill: rgba(0, 0, 0, 0.7);
-  fill: rgba(0, 0, 0, 0.7);
+body .view-carousel .view-controls .like-count {
+  color: #fff;
 }
-body .view-carousel .view-controls .heart-outer-wrap:hover .heart {
-  transform: scale(1.1);
-}
-body .view-carousel .view-controls .heart-outer-wrap.favorited {
-  background: transparent;
-}
-body .view-carousel .view-controls .heart-outer-wrap.favorited .heart-circle {
-  background-color: #E30C12;
-}
-body .view-carousel .view-controls .heart-outer-wrap.favorited .heart svg path {
-  -webkit-fill: rgb(255, 255, 255);
-  -moz-fill: rgb(255, 255, 255);
-  -ms-fill: rgb(255, 255, 255);
-  -o-fill: rgb(255, 255, 255);
-  fill: rgb(255, 255, 255);
+body .view-carousel .view-controls .like-count.black {
+  color: rgba(0, 0, 0, 0.6);
 }
 body .view-carousel .view-controls button.arrow:after {
   width: 40%;

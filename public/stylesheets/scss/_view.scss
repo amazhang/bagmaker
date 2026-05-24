@@ -177,32 +177,26 @@ body .view-carousel {
             }
         }
 
+        .like-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .heart-outer-wrap {
             width: $button-size;
             height: $button-size;
-          
-            .heart svg path {
-                @include prefix(fill, rgba(0, 0, 0, 0.5));
-                @include prefix(stroke, transparent);
-            }
-            &:hover {
-                .heart svg path {
-                    @include prefix(fill, rgba(0, 0, 0, 0.7));
-                }
-                .heart {
-                    transform: scale(1.1);
-                }
-            }
-            &.favorited {
-                background: transparent;
 
-                .heart-circle{
-                    background-color: $red;
-                }
+            &.black svg path {
+                @include prefix(stroke, rgba(0, 0, 0, 0.4));
+            }
+        }
 
-                .heart svg path {
-                    @include prefix(fill, rgba(255, 255, 255, 1));
-                }
+        .like-count {
+            color: #fff;
+            
+            &.black {
+                color: rgba(0, 0, 0, 0.6);
             }
         }
 

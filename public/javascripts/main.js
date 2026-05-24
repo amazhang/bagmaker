@@ -96,16 +96,48 @@ var likes = {
         });
     },
     // Push a fresh server-blessed count into the in-memory tote + DOM badge.
+    //
+    // The grid markup conditionally renders .like-count — when count is 0 the
+    // element is absent from the DOM entirely (so the heart sits alone). This
+    // means we can't just .text(n) — we need to inject the element on the
+    // 0→N transition and remove it on the N→0 transition.
     updateLikeCount : function(toteID, n){
         if (typeof browse !== "undefined" && browse.toteBags){
             var tote = _.findWhere(browse.toteBags, { "_id" : toteID });
             if (tote) tote.likeCount = n;
         }
-        // Grid badge — lives as a sibling of .tote-wrap inside .tote-grid-element.
-        $(".tote-wrap[data-id='" + toteID + "']").closest(".tote-grid-element").find(".like-count").text(n);
-        // View-page badge — only matters if this tote is centered in the carousel.
+
+        // Grid: find .like-wrap, sync .like-count inside it.
+        var $gridWrap = $(".tote-wrap[data-id='" + toteID + "']").closest(".tote-grid-element").find(".like-wrap");
+        likes.syncLikeCountElement($gridWrap, ".like-count:not(.view-like-count)", n);
+
+        // View page: only relevant when this tote is centered in the carousel.
+        // .view-like-count is in the pug, so the element ALWAYS exists; we
+        // just hide it (rather than remove) when count drops to 0.
         if ($(".view-carousel").attr("data-display") === toteID){
-            $(".view-like-count").text(n);
+            var $vlc = $(".view-like-count");
+            if (n > 0){
+                $vlc.text(n).removeClass("hidden");
+            } else {
+                $vlc.text("").addClass("hidden");
+            }
+        }
+    },
+
+    // Helper: keep a .like-count element in sync with a count, injecting or
+    // removing it as needed. $container is the .like-wrap that holds it.
+    syncLikeCountElement : function($container, countSelector, n){
+        if ($container.length === 0) return;
+        var $count = $container.find(countSelector);
+        if (n > 0){
+            if ($count.length === 0){
+                // Inject as the FIRST child (count appears before the heart).
+                $container.prepend("<div class='like-count'>" + n + "</div>");
+            } else {
+                $count.text(n);
+            }
+        } else {
+            $count.remove();
         }
     },
     indexOf : function(toteID){

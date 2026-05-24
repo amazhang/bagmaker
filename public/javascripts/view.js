@@ -197,10 +197,18 @@ var viewPage = {
         }
 
         // Phase 3: keep the view-page like-count badge in sync with the centered tote.
+        // .view-like-count is always in the DOM (from index.pug) — we toggle .hidden
+        // when count is 0 to match the grid's "no badge when zero" behavior.
         if (typeof browse !== "undefined" && browse.toteBags){
             var centered = _.findWhere(browse.toteBags, { "_id" : toteID });
             var n = (centered && typeof centered.likeCount === "number") ? centered.likeCount : 0;
-            $(".view-like-count").text(n);
+            var $vlc = $(".view-like-count");
+            $vlc.parent().removeClass("red white black").addClass(centered.color);
+            if (n > 0){
+                $vlc.text(n).removeClass("hidden");
+            } else {
+                $vlc.text("").addClass("hidden");
+            }
         }
     }
 };

@@ -248,10 +248,10 @@ var browse = {
                 var rendered = template(toteObj);
 
                 // marking which ones are favorited.
-                var heartWrap = "<button class='heart-outer-wrap'><div class='heart-wrap'>";
+                var heartWrap = "<button class='heart-outer-wrap " + toteObj.bags[0].color +"'><div class='heart-wrap'>";
                 var toteID = toteObj.bags[0]._id;
                 if (likes.indexOf(toteID) > -1){
-                    heartWrap = "<button class='heart-outer-wrap favorited'><div class='heart-wrap'>";
+                    heartWrap = "<button class='heart-outer-wrap " + toteObj.bags[0].color +" favorited'><div class='heart-wrap'>";
                 }
 
                 heartWrap += "<div class='heart-circle'></div>" +
@@ -267,7 +267,7 @@ var browse = {
                 }
                 var $tote = $("<div />", {
                     class : "tote-grid-element start " + toteObj.bags[0].color,
-                    html :  "<div class='like-wrap'>" + likeBadge + heartWrap + "</div>" + rendered
+                    html :  "<div class='like-wrap " + toteObj.bags[0].color + "'>" + likeBadge + heartWrap + "</div>" + rendered
                 });
                 $tote.appendTo(".browse-page.content .browse-tote-wrap");
 
