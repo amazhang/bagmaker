@@ -2,16 +2,17 @@
 // Phase 3 cutover — wipes the slate clean.
 //
 // You picked "wipe the slate" for the Phase 3 likes overhaul, which means
-// every Totebag.likes legacy count is reset to 0 and the new Like collection
-// starts empty. Run this ONCE when you're ready to flip the new like system
-// on in production.
+// the legacy Totebag.likes field is removed entirely from every tote and the
+// new Like collection starts empty. Run this ONCE when you're ready to flip
+// the new like system on in production.
 //
 // Usage:
 //   node scripts/reset-likes.js          # asks for confirmation
 //   node scripts/reset-likes.js --yes    # skip confirmation (for CI/scripts)
 //
 // What it does:
-//   1. Sets every Totebag.likes to 0.
+//   1. $unsets `likes` on every tote that still has one (the field has been
+//      removed from the schema — this scrubs the old data from disk too).
 //   2. Drops the `likes` collection (Like docs created in dev/testing).
 //
 // What it does NOT do:
@@ -40,17 +41,17 @@ async function main() {
         new mongoose.Schema({}, { strict: false, collection: 'totebags' })
     );
 
-    const totesWithLikes = await Totebag.countDocuments({ likes: { $gt: 0 } });
+    const totesWithLikesField = await Totebag.countDocuments({ likes: { $exists: true } });
     const likesCollExists = (await mongoose.connection.db.listCollections({ name: 'likes' }).toArray())
         .length > 0;
     const likesCount = likesCollExists
         ? await mongoose.connection.db.collection('likes').countDocuments()
         : 0;
 
-    console.log(`Totes with likes > 0: ${totesWithLikes}`);
+    console.log(`Totes still carrying a 'likes' field: ${totesWithLikesField}`);
     console.log(`Documents in 'likes' collection: ${likesCount}`);
 
-    if (totesWithLikes === 0 && likesCount === 0) {
+    if (totesWithLikesField === 0 && likesCount === 0) {
         console.log('Nothing to reset — slate is already clean.');
         await mongoose.disconnect();
         return;
@@ -60,7 +61,7 @@ async function main() {
         const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
         const answer = await new Promise((resolve) => {
             rl.question(
-                `\nReset ${totesWithLikes} totes to 0 likes and drop ${likesCount} Like docs?\nType "yes" to confirm: `,
+                `\n$unset likes on ${totesWithLikesField} totes and drop ${likesCount} Like docs?\nType "yes" to confirm: `,
                 resolve
             );
         });
@@ -73,10 +74,10 @@ async function main() {
     }
 
     const updateResult = await Totebag.updateMany(
-        { likes: { $gt: 0 } },
-        { $set: { likes: 0 } }
+        { likes: { $exists: true } },
+        { $unset: { likes: '' } }
     );
-    console.log(`Reset likes=0 on ${updateResult.modifiedCount} totes.`);
+    console.log(`Removed 'likes' field from ${updateResult.modifiedCount} totes.`);
 
     if (likesCollExists) {
         await mongoose.connection.db.collection('likes').drop();

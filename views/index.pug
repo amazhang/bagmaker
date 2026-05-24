@@ -8,23 +8,6 @@ block content
         .sort
             .sort-option(data-attr='timestamp', data-dir='desc', data-name='latest') Latest
             .sort-option(data-attr='likes', data-dir='desc', data-name='popular') Popular
-
-            //--------------------------------------------//
-            //---- CODE FOR MAKING A DROPDOWN VERSION ----//
-            //--------------------------------------------//
-
-            //- .selected-sort
-            //-     //- span.sortTitle Sort:
-            //-     span.name Latest
-            //- ul
-            //-     li.item(data-attr='timestamp', data-dir='desc') Latest
-            //-     li.item(data-attr='timestamp', data-dir='asc') Oldest
-            //-     li.item(data-attr='likes', data-dir='desc') Popular
-        //
-            Phase 3: time-window picker for the Popular sort.
-            Visible-only when sort=popular (CSS / JS hides otherwise).
-            Native <select> is hidden but kept for keyboard + a11y;
-            the styled button + menu drives the actual UI.
         .window-picker.hidden(aria-hidden='true')
             label.window-picker-label(for='windowSelect') Window:
             button.window-picker-button(type='button', aria-haspopup='listbox', aria-expanded='false')

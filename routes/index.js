@@ -34,17 +34,19 @@ function sortNameFor(sort) {
     return undefined;
 }
 
-// Used for the non-popular sorts. Popular uses the aggregation pipeline below
-// because we sort by counted-likes-in-window rather than a stored field.
+// Used for the non-popular sorts. Popular goes through popularPipeline()
+// below because it ranks by counted-likes-in-window rather than a stored
+// field; we never fall through to this function with sort==='popular'.
+//
+// _id is included as a secondary sort key so the order is fully deterministic
+// when the primary key ties — without it, two totes with identical timestamps
+// could swap positions between requests, which would make Phase 4's index
+// computation race against the page list endpoint.
 function getSortAttributeNextFromSort(sort) {
     const sortAttribute = {};
-    if (sort === 'latest') sortAttribute.timestamp = -1;
-    else if (sort === 'oldest') sortAttribute.timestamp = 1;
-    else if (sort === 'popular') {
-        // Fallback only — popular endpoints go through popularPipeline().
-        sortAttribute.likes = -1;
-        sortAttribute._id = -1;
-    } else if (sort === 'views') sortAttribute.views = -1;
+    if (sort === 'latest') { sortAttribute.timestamp = -1; sortAttribute._id = -1; }
+    else if (sort === 'oldest') { sortAttribute.timestamp = 1; sortAttribute._id = 1; }
+    else if (sort === 'views') { sortAttribute.views = -1; sortAttribute._id = -1; }
     return sortAttribute;
 }
 
@@ -213,38 +215,80 @@ router.get('/data/:sort/:index', async function (req, res, next) {
     }
 });
 
-// return tote json with neighbour info based on sort + id.
+// Return tote json with neighbour info based on sort + id.
 //
-// NOTE: still loading every tote into memory to find the index. Phase 4 will
-// rewrite this to use a counted-cutoff query. Out of scope for Phase 3.
+// Phase 4: no longer loads the whole collection. For latest/oldest/views the
+// "index" of the requested tote is computed via countDocuments with a sort-
+// key cutoff — O(log N) using the existing schema indexes on timestamp and
+// (for views) a collection scan no worse than before. For popular we still
+// have to evaluate the windowed aggregation across every tote to know X's
+// rank, but we project only _id so the memory cost is ~24 bytes per tote
+// instead of full documents.
 router.get('/data/:sort/tote/:id', async function (req, res, next) {
     try {
         const sort = req.params.sort;
         const id = req.params.id;
-        let totebags;
 
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(404).json('Not found');
+        }
+
+        const found = await Totebag.findById(id).lean();
+        if (!found) return res.status(404).json('Not found');
+
+        const totalBags = await Totebag.countDocuments({});
+        if (totalBags === 0) return res.status(404).json('Not found');
+
+        let index;
         if (sort === 'popular') {
             const window = normalizeWindow(req.query.window);
-            totebags = await Totebag.aggregate(popularPipeline(window));
+            // Same ranking pipeline as everywhere else, but we only need the
+            // _id ordering — no textfields, no like decoration, just IDs.
+            const ranked = await Totebag.aggregate([
+                ...popularPipeline(window),
+                { $project: { _id: 1 } }
+            ]);
+            index = ranked.findIndex((t) => String(t._id) === id);
+            if (index === -1) return res.status(404).json('Not found');
         } else {
-            const sortAttribute = getSortAttributeNextFromSort(sort);
-            totebags = await Totebag.find({}, null, { sort: sortAttribute }).lean();
+            // Compose the "comes before X" filter. With _id as deterministic
+            // tiebreak, this exactly mirrors getSortAttributeNextFromSort().
+            let cutoffFilter;
+            if (sort === 'latest') {
+                cutoffFilter = {
+                    $or: [
+                        { timestamp: { $gt: found.timestamp } },
+                        { timestamp: found.timestamp, _id: { $gt: found._id } }
+                    ]
+                };
+            } else if (sort === 'oldest') {
+                cutoffFilter = {
+                    $or: [
+                        { timestamp: { $lt: found.timestamp } },
+                        { timestamp: found.timestamp, _id: { $lt: found._id } }
+                    ]
+                };
+            } else if (sort === 'views') {
+                cutoffFilter = {
+                    $or: [
+                        { views: { $gt: found.views } },
+                        { views: found.views, _id: { $gt: found._id } }
+                    ]
+                };
+            } else {
+                return res.status(400).json({ error: 'BadSort' });
+            }
+            index = await Totebag.countDocuments(cutoffFilter);
         }
 
-        for (let i = 0; i < totebags.length; i++) {
-            if (String(totebags[i]._id) === id) {
-                const found = totebags[i];
-                const prevIndex = i - 1 < 0 ? totebags.length - 1 : i - 1;
-                const nextIndex = i + 1 >= totebags.length ? 0 : i + 1;
-                found.index = i;
-                found.nextIndex = nextIndex;
-                found.prevIndex = prevIndex;
-                found.totalBags = totebags.length;
-                await decorateLikes([found], req.bmUid);
-                return res.status(200).json(found);
-            }
-        }
-        res.status(404).json('Not found');
+        const prevIndex = index - 1 < 0 ? totalBags - 1 : index - 1;
+        const nextIndex = index + 1 >= totalBags ? 0 : index + 1;
+        found.index = index;
+        found.nextIndex = nextIndex;
+        found.prevIndex = prevIndex;
+        found.totalBags = totalBags;
+        await decorateLikes([found], req.bmUid);
+        return res.status(200).json(found);
     } catch (err) {
         console.error(err);
         res.status(500).json('Internal Server Error');
@@ -268,11 +312,14 @@ router.get('/data/tote/:id', async function (req, res, next) {
 });
 
 /* Paginated JSON list for a sort. */
+// loadSize must match the client's browse.numPerPage so the pagination
+// boundaries align between front-end and back-end. Divisible by 12 to keep
+// rows complete at 2/3/4-column layouts.
 router.get('/data/:sort/page/:page', async function (req, res, next) {
     try {
         const sort = req.params.sort;
         const page = (parseInt(req.params.page, 10) || 1) - 1;
-        const loadSize = 24;
+        const loadSize = 36;
         let totebags;
 
         if (sort === 'popular') {

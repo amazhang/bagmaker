@@ -40,12 +40,22 @@ router.post('/createtote', async function (req, res) {
             return res.send({ res: 'Success' });
         }
 
-        const newtote = new Totebag(req.body);
+        // Strip server-managed / removed fields from the body. The 2015 client
+        // still sends `likes: 0` here; without this, strict:'throw' would
+        // reject the entire create because likes is no longer in the schema.
+        const body = { ...req.body };
+        delete body.likes;
+        delete body.views;
+        delete body.timestamp;
+        delete body._id;
+        delete body.__v;
+
+        const newtote = new Totebag(body);
         await newtote.save();
         res.send({ res: 'Success', id: newtote._id });
     } catch (err) {
-        const body = validationErrorBody(err);
-        if (body) return res.status(400).json(body);
+        const errBody = validationErrorBody(err);
+        if (errBody) return res.status(400).json(errBody);
         console.error('[createtote] unexpected error:', err);
         res.status(500).json({ error: 'InternalServerError' });
     }

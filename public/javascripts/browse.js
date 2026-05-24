@@ -1,7 +1,9 @@
 var browse = {
     toteBags : null, // array of tote objects
     currPage : 1,
-    numPerPage : 24,
+    // Phase 4: 36 = divisible by 12, fits 2/3/4-column layouts cleanly.
+    // Must match the server's loadSize in routes/index.js.
+    numPerPage : 36,
     currSort : "latest",
     currWindow : "all", // Phase 3: time-window filter for popular sort
     loadedAll : false,
@@ -258,13 +260,10 @@ var browse = {
                                 "</div>" +
                             "</div></button>";
 
-                // Phase 3: like-count badge. Server provides .likeCount on each
-                // tote; default to 0 for safety. Anthony owns the visual pass.
                 var likeCount = (typeof toteObj.bags[0].likeCount === "number") ? toteObj.bags[0].likeCount : 0;
                 var likeBadge = "<div class='like-count'>" + likeCount + "</div>";
 
                 var $tote = $("<div />", {
-                    //id : "tote-" + tote._id,
                     class : "tote-grid-element start " + toteObj.bags[0].color,
                     html :  heartWrap + likeBadge + rendered
                 });

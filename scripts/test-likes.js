@@ -134,7 +134,7 @@ async function main() {
             for (const t of results) {
                 const preview = (t.textfields && t.textfields[0] && t.textfields[0].text) || '(no text)';
                 console.log(
-                    `  windowLikes=${t.windowLikes}  likes=${t.likes ?? 0}  ${String(t._id)}  ${JSON.stringify(preview).slice(0, 40)}`
+                    `  windowLikes=${t.windowLikes}  ${String(t._id)}  ${JSON.stringify(preview).slice(0, 40)}`
                 );
             }
         }

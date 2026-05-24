@@ -1,12 +1,18 @@
 // Totebag model — registers the Mongoose schema globally on require.
 //
 // Validation policy:
-//   - Server controls timestamp/likes/views; client values are ignored.
+//   - Server controls timestamp/views; client values are ignored.
 //   - Unknown fields are rejected (strict: 'throw') so the API surface is
 //     locked down. If the client sends a field we don't know about, the save
 //     fails with a clear error instead of silently bloating the document.
 //   - Coordinate / size / count bounds prevent the "break out of text area"
 //     class of bugs by refusing values the UI would never produce.
+//
+// Phase 3 (2026) note: there used to be a `likes` field on this schema —
+// a denormalized counter the 2015 client could overwrite. That field has
+// been removed entirely. Likes now live in their own collection (Like.js)
+// and popularity is computed via aggregation. The old field is $unset on
+// existing docs by scripts/reset-likes.js at cutover.
 
 const mongoose = require('mongoose');
 
@@ -68,7 +74,6 @@ const TotebagSchema = new mongoose.Schema(
             default: 'small'
         },
         // Server-managed: never trust the client.
-        likes: { type: Number, default: 0, min: 0, index: true },
         views: { type: Number, default: 0, min: 0 },
         timestamp: { type: Date, default: Date.now, index: true },
 
@@ -92,11 +97,10 @@ const TotebagSchema = new mongoose.Schema(
 // Belt-and-suspenders: even if someone bypasses defaults, force server-managed
 // fields to safe values on every save.
 TotebagSchema.pre('validate', function (next) {
-    // For brand-new totes, ensure timestamp/likes/views are set by the server,
+    // For brand-new totes, ensure timestamp/views are set by the server,
     // not whatever the client sent.
     if (this.isNew) {
         this.timestamp = new Date();
-        this.likes = 0;
         this.views = 0;
     }
     next();
