@@ -180,23 +180,26 @@ body .view-carousel {
         .heart-outer-wrap {
             width: $button-size;
             height: $button-size;
-
-            &.black {
-                svg path {
-                    @include prefix(fill, rgba(26, 25, 25, 0.2));
-                }
+          
+            .heart svg path {
+                @include prefix(fill, rgba(0, 0, 0, 0.5));
+                @include prefix(stroke, transparent);
             }
-            &.white {
+            &:hover {
                 .heart svg path {
-                    @include prefix(fill, rgba(254, 67, 68, 1));
+                    @include prefix(fill, rgba(0, 0, 0, 0.7));
                 }
-            }
-            &.red {
-                .heart svg path {
-                    @include prefix(fill, rgba(60, 60, 60, 1));
+                .heart {
+                    transform: scale(1.1);
                 }
             }
             &.favorited {
+                background: transparent;
+
+                .heart-circle{
+                    background-color: $red;
+                }
+
                 .heart svg path {
                     @include prefix(fill, rgba(255, 255, 255, 1));
                 }

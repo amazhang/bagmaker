@@ -63,47 +63,62 @@
 }
 
 .tote-grid-element {
-    &.red button.heart-outer-wrap {
-        svg path {
-            @include prefix(fill, rgba(60, 60, 60, 1));
-        }
-    }
-    &.white button.heart-outer-wrap {
-        svg path {
-            @include prefix(fill, rgba(254, 67, 68, 1));
-        }
-
-        &.favorited {
-            background-color: rgba(255, 255, 255, 0.5);
-            .heart-wrap .heart-circle {
-                @include calc(width, calc(100% - 4px));
-                @include calc(height, calc(100% - 4px));
+    &.black {
+        button.heart-outer-wrap {
+            svg path {
+                @include prefix(stroke, rgba(0, 0, 0, 0.4));
             }
         }
-    }
-    &.black button.heart-outer-wrap {
-        svg path {
-            @include prefix(fill, rgba(26, 25, 25, 0.2));
+        .like-count {
+            color: rgba(0, 0, 0, 0.6);   
         }
     }
+    &.white {
+        button.heart-outer-wrap.favorited .heart-circle {
+            background-color: $red;
+        }
+        .like-count {
+            color: rgba(0, 0, 0, 0.6);   
+        }   
+    }
+    &.red .like-count {
+        color: rgba(255, 255, 255, 0.6);
+    }   
 }
 
 button.heart-outer-wrap {
     padding: 0;
 
+    svg path {        
+        @include prefix (fill, "transparent");
+        @include prefix(stroke, #fff);
+        stroke-width: 2px;
+        transition: fill 0.3s $easing-curve, stroke 0.3s $easing-curve;
+    }
+
     &:hover {
         opacity: 1;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+
+        .heart-circle {
+            background-color: #fff;
+        }
+
+        &:not(.favorited) svg path {
+            @include prefix(fill, rgba(0, 0, 0, 0.5));
+            @include prefix(stroke, transparent);
+        }
     }
 
     &.favorited {
         .heart-wrap {
-            // background-color: $fadedRed;
 
             .heart {
                 @include prefix(transform, scale(1.2));
 
                 svg path {
                     fill: rgba(255, 255, 255, 1);
+                    @include prefix(stroke, "transparent");
                 }
             }
 
@@ -111,6 +126,10 @@ button.heart-outer-wrap {
                 width: 100%;
                 height: 100%;
                 opacity: 1;
+                @include calc(width, calc(100% - 4px));
+                @include calc(height, calc(100% - 4px));
+                background-color: $fadedRed;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             }
         }
     }
@@ -156,12 +175,10 @@ button.heart-outer-wrap {
     .heart-circle {
         @include centerAbsV;
         @include centerAbsH;
-        width: 2px;
-        height: 2px;
-        opacity: 0;
-        background-color: $fadedRed;
         @include prefix(transition, 0.3s $easing-curve);
         @include prefix(border-radius, 50%);
+        width: 100%;
+        height: 100%;
     }
 }
 
@@ -253,19 +270,6 @@ button.heart-outer-wrap {
         float: none;
         position: absolute;
     }
-    // &:after{
-    //     content: "";
-    //     position: absolute;
-    //     top: 0;
-    //     left: 0;
-    //     width: 100%;
-    //     height: 100%;
-    //     background-color: #fff;
-    //     opacity: 0;
-    //     @include prefix (transition, 0.3s $easing-curve);
-    //     pointer-events: none;
-    // }
-
     &:hover {
         .tote-wrap {
             @include prefix(transform, scale(1.1) translateY(-45%));
@@ -289,24 +293,26 @@ button.heart-outer-wrap {
             .tote-wrap {
                 @include prefix(transform, scale(1) translateY(-50%));
             }
-            .heart-outer-wrap {
-                opacity: 0;
-            }
         }
     }
-
-    .heart-outer-wrap {
+    .like-wrap {
         position: absolute;
         top: $body-padding-sml;
         right: $body-padding-sml;
         z-index: $z-first-level;
-        opacity: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px
+    }
+    .heart-outer-wrap {
+        background: transparent;
+        box-shadow: none;
 
         width: 50px;
         height: 50px;
 
         &.favorited {
-            opacity: 0.85;
+            opacity: 0.9;
 
             &:hover {
                 opacity: 1;
@@ -368,14 +374,9 @@ button.heart-outer-wrap {
 // Like-count badge on each grid tote. Sits inside the tote-grid-element,
 // outside the bag itself, so it doesn't compete with the bag's text.
 .tote-grid-element .like-count {
-    position: absolute;
-    top: 12px;
-    left: 14px;
-    z-index: 2;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    color: $darkGrey;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.25;
     pointer-events: none;
 }
 
@@ -383,10 +384,11 @@ button.heart-outer-wrap {
 // alongside the heart in the final pass.
 .view-controls .like-count.view-like-count {
     display: inline-block;
-    margin-left: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: $darkGrey;
+    margin-right: 8px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.25;
+    pointer-events: none;
 }
 
 // Window picker for the popular sort. Custom button + menu, with a hidden

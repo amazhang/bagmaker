@@ -262,10 +262,12 @@ var browse = {
 
                 var likeCount = (typeof toteObj.bags[0].likeCount === "number") ? toteObj.bags[0].likeCount : 0;
                 var likeBadge = "<div class='like-count'>" + likeCount + "</div>";
-
+                if (likeCount === 0) {
+                    likeBadge = "";
+                }
                 var $tote = $("<div />", {
                     class : "tote-grid-element start " + toteObj.bags[0].color,
-                    html :  heartWrap + likeBadge + rendered
+                    html :  "<div class='like-wrap'>" + likeBadge + heartWrap + "</div>" + rendered
                 });
                 $tote.appendTo(".browse-page.content .browse-tote-wrap");
 
@@ -304,7 +306,6 @@ var browse = {
 
         $.getJSON(currJsonURL, function( data ){
             likes.seedFromTotes([data]);
-            // toteIdArray.push(toteId);
             currBag = {bags : [data]};
             $(".view-controls .heart-outer-wrap").attr("class", "heart-outer-wrap " + data.color);
             
@@ -385,7 +386,7 @@ var browse = {
                 $("head title").html("View Tote | Totebag Maker | Huge inc.");
                 $("body").addClass("lock-scroll");
                 $(".view-carousel").attr("data-display", toteId);
-                // Phase 3: sync the view-page like count badge on initial open.
+
                 if (typeof viewPage !== "undefined" && viewPage.updateLikes){
                     viewPage.updateLikes();
                 }
@@ -402,7 +403,7 @@ var browse = {
             "class" : $tote.attr("class") + "",
             "html" : $tote.html()
         });
-        $dupe.find(".heart-outer-wrap").remove();
+        $dupe.find(".like-wrap").remove();
         $dupe.height(h);
         $dupe.width(w);
 

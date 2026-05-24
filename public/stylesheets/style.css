@@ -293,13 +293,13 @@ body .tote-wrap {
   transition: 0.5s cubic-bezier(0.7, 0, 0.3, 1);
 }
 body .tote-wrap.red .actual-tote .handle {
-  background-color: #dc143a;
+  background-color: #E30C12;
 }
 body .tote-wrap.red .actual-tote .bag-bottom .bottom {
-  background-color: #dc143a;
+  background-color: #E30C12;
 }
 body .tote-wrap.red .actual-tote .bag-body {
-  background-color: #dc143a;
+  background-color: #E30C12;
 }
 body .tote-wrap.red .actual-tote .bag-body .textfields-wrap .strikethrough .strike,
 body .tote-wrap.red .actual-tote .bag-body .editable-field.strikethrough .clone-text-wrap {
@@ -569,7 +569,6 @@ body .tote-wrap .actual-tote .shadow-blur .tote-shadow {
   }
 }
 button {
-  position: fixed;
   z-index: 200;
 }
 button.close {
@@ -581,6 +580,10 @@ button.save {
   right: 30px;
   background-color: #fa4248;
   color: #fff;
+}
+
+button.save, button.close {
+  position: fixed;
 }
 
 @media screen and (max-width: 940px) {
@@ -775,7 +778,7 @@ button.save {
   height: 30px;
   top: -15px;
   right: -15px;
-  background: linear-gradient(to bottom, #dc143a, #cd173a);
+  background: linear-gradient(to bottom, #E30C12, #cd173a);
 }
 .content.create-page .tote-wrap .actual-tote .bag-body .editable-field.selected .corner.tl, .content.create-page .tote-wrap .actual-tote .bag-body .editable-field.selected:hover .corner.tl {
   top: -10px;
@@ -852,7 +855,7 @@ button.save {
 .content.create-page .tote-wrap .actual-tote .bag-body .editable-field .corner.tr {
   top: 0;
   right: 0;
-  background: linear-gradient(to bottom, #dc143a, #cd173a);
+  background: linear-gradient(to bottom, #E30C12, #cd173a);
   cursor: pointer;
 }
 .content.create-page .tote-wrap .actual-tote .bag-body .editable-field .corner.tr:after {
@@ -1136,10 +1139,10 @@ button.save {
   opacity: 1;
 }
 .content.create-page .colors .color[rel=red] {
-  background-color: #dc143a;
+  background-color: #E30C12;
 }
 .content.create-page .colors .color[rel=red] .color-wrap {
-  background-color: #dc143a;
+  background-color: #E30C12;
 }
 .content.create-page .colors .color[rel=black] {
   background-color: #000;
@@ -1366,53 +1369,83 @@ button.save {
   opacity: 0.9;
 }
 
-.tote-grid-element.red button.heart-outer-wrap svg path {
-  -webkit-fill: rgb(60, 60, 60);
-  -moz-fill: rgb(60, 60, 60);
-  -ms-fill: rgb(60, 60, 60);
-  -o-fill: rgb(60, 60, 60);
-  fill: rgb(60, 60, 60);
-}
-.tote-grid-element.white button.heart-outer-wrap svg path {
-  -webkit-fill: rgb(254, 67, 68);
-  -moz-fill: rgb(254, 67, 68);
-  -ms-fill: rgb(254, 67, 68);
-  -o-fill: rgb(254, 67, 68);
-  fill: rgb(254, 67, 68);
-}
-.tote-grid-element.white button.heart-outer-wrap.favorited {
-  background-color: rgba(255, 255, 255, 0.5);
-}
-.tote-grid-element.white button.heart-outer-wrap.favorited .heart-wrap .heart-circle {
-  width: -o-calc(100% - 4px);
-  width: calc(100% - 4px);
-  height: -o-calc(100% - 4px);
-  height: calc(100% - 4px);
-}
 .tote-grid-element.black button.heart-outer-wrap svg path {
-  -webkit-fill: rgba(26, 25, 25, 0.2);
-  -moz-fill: rgba(26, 25, 25, 0.2);
-  -ms-fill: rgba(26, 25, 25, 0.2);
-  -o-fill: rgba(26, 25, 25, 0.2);
-  fill: rgba(26, 25, 25, 0.2);
+  -webkit-stroke: rgba(0, 0, 0, 0.4);
+  -moz-stroke: rgba(0, 0, 0, 0.4);
+  -ms-stroke: rgba(0, 0, 0, 0.4);
+  -o-stroke: rgba(0, 0, 0, 0.4);
+  stroke: rgba(0, 0, 0, 0.4);
+}
+.tote-grid-element.black .like-count {
+  color: rgba(0, 0, 0, 0.6);
+}
+.tote-grid-element.white button.heart-outer-wrap.favorited .heart-circle {
+  background-color: #E30C12;
+}
+.tote-grid-element.white .like-count {
+  color: rgba(0, 0, 0, 0.6);
+}
+.tote-grid-element.red .like-count {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 button.heart-outer-wrap {
   padding: 0;
 }
+button.heart-outer-wrap svg path {
+  -webkit-fill: "transparent";
+  -moz-fill: "transparent";
+  -ms-fill: "transparent";
+  -o-fill: "transparent";
+  fill: "transparent";
+  -webkit-stroke: #fff;
+  -moz-stroke: #fff;
+  -ms-stroke: #fff;
+  -o-stroke: #fff;
+  stroke: #fff;
+  stroke-width: 2px;
+  transition: fill 0.3s cubic-bezier(0.7, 0, 0.3, 1), stroke 0.3s cubic-bezier(0.7, 0, 0.3, 1);
+}
 button.heart-outer-wrap:hover {
   opacity: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+button.heart-outer-wrap:hover .heart-circle {
+  background-color: #fff;
+}
+button.heart-outer-wrap:hover:not(.favorited) svg path {
+  -webkit-fill: rgba(0, 0, 0, 0.5);
+  -moz-fill: rgba(0, 0, 0, 0.5);
+  -ms-fill: rgba(0, 0, 0, 0.5);
+  -o-fill: rgba(0, 0, 0, 0.5);
+  fill: rgba(0, 0, 0, 0.5);
+  -webkit-stroke: transparent;
+  -moz-stroke: transparent;
+  -ms-stroke: transparent;
+  -o-stroke: transparent;
+  stroke: transparent;
 }
 button.heart-outer-wrap.favorited .heart-wrap .heart {
   transform: scale(1.2);
 }
 button.heart-outer-wrap.favorited .heart-wrap .heart svg path {
   fill: rgb(255, 255, 255);
+  -webkit-stroke: "transparent";
+  -moz-stroke: "transparent";
+  -ms-stroke: "transparent";
+  -o-stroke: "transparent";
+  stroke: "transparent";
 }
 button.heart-outer-wrap.favorited .heart-wrap .heart-circle {
   width: 100%;
   height: 100%;
   opacity: 1;
+  width: -o-calc(100% - 4px);
+  width: calc(100% - 4px);
+  height: -o-calc(100% - 4px);
+  height: calc(100% - 4px);
+  background-color: #fa4248;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 button.heart-outer-wrap.white.favorited {
   background-color: rgba(255, 255, 255, 0.5);
@@ -1457,12 +1490,10 @@ button.heart-outer-wrap.white.favorited .heart-wrap .heart-circle {
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: 2px;
-  height: 2px;
-  opacity: 0;
-  background-color: #fa4248;
   transition: 0.3s cubic-bezier(0.7, 0, 0.3, 1);
   border-radius: 50%;
+  width: 100%;
+  height: 100%;
 }
 
 .tote-grid-element {
@@ -1554,20 +1585,23 @@ button.heart-outer-wrap.white.favorited .heart-wrap .heart-circle {
 .tote-grid-element.view:hover .tote-wrap, .tote-grid-element#zoomAnimation:hover .tote-wrap {
   transform: scale(1) translateY(-50%);
 }
-.tote-grid-element.view:hover .heart-outer-wrap, .tote-grid-element#zoomAnimation:hover .heart-outer-wrap {
-  opacity: 0;
-}
-.tote-grid-element .heart-outer-wrap {
+.tote-grid-element .like-wrap {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 101;
-  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tote-grid-element .heart-outer-wrap {
+  background: transparent;
+  box-shadow: none;
   width: 50px;
   height: 50px;
 }
 .tote-grid-element .heart-outer-wrap.favorited {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 .tote-grid-element .heart-outer-wrap.favorited:hover {
   opacity: 1;
@@ -1623,23 +1657,19 @@ button.heart-outer-wrap.white.favorited .heart-wrap .heart-circle {
   }
 }
 .tote-grid-element .like-count {
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  z-index: 2;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1;
-  color: #3c3c3c;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.25;
   pointer-events: none;
 }
 
 .view-controls .like-count.view-like-count {
   display: inline-block;
-  margin-left: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #3c3c3c;
+  margin-right: 8px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.25;
+  pointer-events: none;
 }
 
 .window-picker {
@@ -1867,26 +1897,33 @@ body .view-carousel .view-controls .heart-outer-wrap {
   width: 65px;
   height: 65px;
 }
-body .view-carousel .view-controls .heart-outer-wrap.black svg path {
-  -webkit-fill: rgba(26, 25, 25, 0.2);
-  -moz-fill: rgba(26, 25, 25, 0.2);
-  -ms-fill: rgba(26, 25, 25, 0.2);
-  -o-fill: rgba(26, 25, 25, 0.2);
-  fill: rgba(26, 25, 25, 0.2);
+body .view-carousel .view-controls .heart-outer-wrap .heart svg path {
+  -webkit-fill: rgba(0, 0, 0, 0.5);
+  -moz-fill: rgba(0, 0, 0, 0.5);
+  -ms-fill: rgba(0, 0, 0, 0.5);
+  -o-fill: rgba(0, 0, 0, 0.5);
+  fill: rgba(0, 0, 0, 0.5);
+  -webkit-stroke: transparent;
+  -moz-stroke: transparent;
+  -ms-stroke: transparent;
+  -o-stroke: transparent;
+  stroke: transparent;
 }
-body .view-carousel .view-controls .heart-outer-wrap.white .heart svg path {
-  -webkit-fill: rgb(254, 67, 68);
-  -moz-fill: rgb(254, 67, 68);
-  -ms-fill: rgb(254, 67, 68);
-  -o-fill: rgb(254, 67, 68);
-  fill: rgb(254, 67, 68);
+body .view-carousel .view-controls .heart-outer-wrap:hover .heart svg path {
+  -webkit-fill: rgba(0, 0, 0, 0.7);
+  -moz-fill: rgba(0, 0, 0, 0.7);
+  -ms-fill: rgba(0, 0, 0, 0.7);
+  -o-fill: rgba(0, 0, 0, 0.7);
+  fill: rgba(0, 0, 0, 0.7);
 }
-body .view-carousel .view-controls .heart-outer-wrap.red .heart svg path {
-  -webkit-fill: rgb(60, 60, 60);
-  -moz-fill: rgb(60, 60, 60);
-  -ms-fill: rgb(60, 60, 60);
-  -o-fill: rgb(60, 60, 60);
-  fill: rgb(60, 60, 60);
+body .view-carousel .view-controls .heart-outer-wrap:hover .heart {
+  transform: scale(1.1);
+}
+body .view-carousel .view-controls .heart-outer-wrap.favorited {
+  background: transparent;
+}
+body .view-carousel .view-controls .heart-outer-wrap.favorited .heart-circle {
+  background-color: #E30C12;
 }
 body .view-carousel .view-controls .heart-outer-wrap.favorited .heart svg path {
   -webkit-fill: rgb(255, 255, 255);

@@ -1,5 +1,4 @@
 button {
-    position: fixed;
     z-index: $z-second-level;
 
     &.close {
@@ -12,6 +11,10 @@ button {
         background-color: $fadedRed;
         color: #fff;
     }
+}
+
+button.save, button.close {
+    position: fixed;
 }
 
 @media screen and (max-width: $medBP) {
