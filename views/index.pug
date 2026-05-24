@@ -8,26 +8,27 @@ block content
         .sort
             .sort-option(data-attr='timestamp', data-dir='desc', data-name='latest') Latest
             .sort-option(data-attr='likes', data-dir='desc', data-name='popular') Popular
-        .window-picker.hidden(aria-hidden='true')
-            label.window-picker-label(for='windowSelect') Window:
-            button.window-picker-button(type='button', aria-haspopup='listbox', aria-expanded='false')
-                span.window-picker-current All time
-                span.window-picker-caret
-            ul.window-picker-menu(role='listbox')
-                li.window-picker-item(role='option', data-window='day') Today
-                li.window-picker-item(role='option', data-window='week') This week
-                li.window-picker-item(role='option', data-window='month') This month
-                li.window-picker-item(role='option', data-window='year') This year
-                li.window-picker-item.sel(role='option', data-window='all') All time
-            select.window-picker-native(id='windowSelect', name='window', aria-label='Time window')
-                option(value='day') Today
-                option(value='week') This week
-                option(value='month') This month
-                option(value='year') This year
-                option(value='all', selected='selected') All time
-        .create
-            button.text 
-                span.lrg New Bag
+        .actions
+            .window-picker.hidden(aria-hidden='true')
+                label.window-picker-label(for='windowSelect') Window:
+                button.window-picker-button(type='button', aria-haspopup='listbox', aria-expanded='false')
+                    span.window-picker-current All time
+                    span.window-picker-caret
+                ul.window-picker-menu(role='listbox')
+                    li.window-picker-item(role='option', data-window='day') Today
+                    li.window-picker-item(role='option', data-window='week') This week
+                    li.window-picker-item(role='option', data-window='month') This month
+                    li.window-picker-item(role='option', data-window='year') This year
+                    li.window-picker-item.sel(role='option', data-window='all') All time
+                select.window-picker-native(id='windowSelect', name='window', aria-label='Time window')
+                    option(value='day') Today
+                    option(value='week') This week
+                    option(value='month') This month
+                    option(value='year') This year
+                    option(value='all', selected='selected') All time
+            .create
+                button.text 
+                    span.lrg New Bag
     .content.browse-page
         #viewId #{toteID}
         #sort #{sort}

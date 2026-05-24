@@ -169,7 +169,11 @@ nav {
     top: 0;
     left: 0;
     background-color: rgba(255, 255, 255, 0.97);
-    // border-bottom: 1px solid $stroke-color;
+    border-bottom: 1px solid $stroke-color;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     @include prefix(
         box-shadow,
         inset 0 0 0 0px rgba(210, 209, 209, 0.4),
@@ -186,7 +190,6 @@ nav {
     .sort {
         position: relative;
         padding: 0;
-        float: left;
         font-size: 28px;
         line-height: $navHeight;
 
@@ -286,18 +289,6 @@ nav {
                 @include prefix(transform, translateY(0));
             }
 
-            // &:before{
-            //     content: "";
-            //     width: 0;
-            //     height: 0;
-            //     border-left: 10px solid transparent;
-            //     border-right: 10px solid transparent;
-            //     border-bottom: 10px solid rgba(0,0,0,0.95);
-            //     position: absolute;
-            //     top: -10px;
-            //     right: $body-padding - 5px;
-            // }
-
             li {
                 color: #fff;
                 display: block;
@@ -305,7 +296,6 @@ nav {
                 box-sizing: border-box;
                 padding: 0 $body-padding;
                 font-size: 24px;
-                //width: 250px;
                 border-top: 1px solid rgba(255, 255, 255, 0.2);
                 @include prefix(transition, 0.3s $easing-curve);
 
@@ -316,14 +306,16 @@ nav {
         }
     }
 
+    .actions {
+        display: flex;
+        align-items: center;
+        padding-right: $body-padding;
+    }
+
     .create {
         color: #000;
-        float: right;
-        height: 100%;
 
         button {
-            position: absolute;
-            right: $body-padding;
             top: ($navHeight - $button-size) * 0.5;
             background-color: $fadedRed;
             color: #fff;
