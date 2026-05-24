@@ -64,25 +64,11 @@
 
 .tote-grid-element {
     &.red button.heart-outer-wrap {
-        .heart-wrap .heart .inner-heart {
-            &:after,
-            &:before {
-                background-color: $darkGrey;
-            }
-        }
-
         svg path {
             @include prefix(fill, rgba(60, 60, 60, 1));
         }
     }
     &.white button.heart-outer-wrap {
-        .heart-wrap .heart .inner-heart {
-            &:after,
-            &:before {
-                background-color: $fadedRed;
-            }
-        }
-
         svg path {
             @include prefix(fill, rgba(254, 67, 68, 1));
         }
@@ -96,13 +82,6 @@
         }
     }
     &.black button.heart-outer-wrap {
-        .heart-wrap .heart .inner-heart {
-            &:after,
-            &:before {
-                background-color: $grey;
-            }
-        }
-
         svg path {
             @include prefix(fill, rgba(26, 25, 25, 0.2));
         }
@@ -123,14 +102,6 @@ button.heart-outer-wrap {
             .heart {
                 @include prefix(transform, scale(1.2));
 
-                .inner-heart {
-                    &:after,
-                    &:before {
-                        background-color: #fff !important;
-                        @include prefix(transition, 0.3s 0.2s $easing-curve);
-                    }
-                }
-
                 svg path {
                     fill: rgba(255, 255, 255, 1);
                 }
@@ -145,34 +116,12 @@ button.heart-outer-wrap {
     }
 
     &.white {
-        .heart-wrap .heart .inner-heart {
-            &:after,
-            &:before {
-                background-color: $fadedRed;
-            }
-        }
         &.favorited {
             background-color: rgba(255, 255, 255, 0.5);
 
             .heart-wrap .heart-circle {
                 @include calc(width, calc(100% - 4px));
                 @include calc(height, calc(100% - 4px));
-            }
-        }
-    }
-    &.red {
-        .heart-wrap .heart .inner-heart {
-            &:after,
-            &:before {
-                background-color: $darkGrey;
-            }
-        }
-    }
-    &.black {
-        .heart-wrap .heart .inner-heart {
-            &:after,
-            &:before {
-                background-color: $grey;
             }
         }
     }
@@ -202,37 +151,6 @@ button.heart-outer-wrap {
             right: 0;
             margin: 0 auto;
             transform: translateY(-50%);
-        }
-
-        .inner-heart {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            @include prefix(transition, 0.3s $easing-curve);
-            z-index: $z-first-level;
-
-            &:after,
-            &:before {
-                width: 55%;
-                height: 95%;
-                position: absolute;
-                top: 2px;
-                content: '';
-                @include prefix(border-top-left-radius, 20px);
-                @include prefix(border-top-right-radius, 20px);
-                @include prefix(transition, 0.3s $easing-curve);
-            }
-
-            &:before {
-                left: 0;
-                @include prefix(transform, rotate(45deg));
-                @include prefix(transform-origin, 100% 100%);
-            }
-            &:after {
-                left: 50%;
-                @include prefix(transform, rotate(-45deg));
-                @include prefix(transform-origin, 0 100%);
-            }
         }
     }
     .heart-circle {
@@ -329,9 +247,6 @@ button.heart-outer-wrap {
     &.start {
         @include prefix(transform, translateY(100%));
         opacity: 0;
-    }
-    &.no-transition {
-        @include prefix(transition, none);
     }
     &.dupe {
         display: block;
