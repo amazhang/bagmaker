@@ -3,26 +3,18 @@
         .view-carousel .view-controls {
             top: auto;
             bottom: 0;
-            width: ($button-size-sml * 3) + ($body-padding-sml * 2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
             left: 0;
             right: 0;
             margin: 0 auto;
             text-align: center;
 
-            & > * {
-                position: absolute;
-                margin-left: 0;
-            }
-
-            .arrow.left {
-                left: 0;
-            }
-            .arrow.right {
-                right: 0;
-            }
-            .heart-outer-wrap {
-                @include centerAbsH;
-            }
+            .arrow.left { order: 0; }
+            .like-wrap { order: 1; }
+            .arrow.right { order: 2; margin-left: 0; }
         }
     }
 }
@@ -189,14 +181,6 @@ body .view-carousel {
 
             &.black svg path {
                 @include prefix(stroke, rgba(0, 0, 0, 0.4));
-            }
-        }
-
-        .like-count {
-            color: #fff;
-            
-            &.black {
-                color: rgba(0, 0, 0, 0.6);
             }
         }
 

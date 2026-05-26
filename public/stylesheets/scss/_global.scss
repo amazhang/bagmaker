@@ -35,8 +35,6 @@
                 }
             }
             .create button {
-                right: $body-padding-sml;
-                top: ($navHeight-sml - $button-size-sml) * 0.5;
                 width: $button-size-sml;
 
                 &:before,
@@ -310,13 +308,18 @@ nav {
         display: flex;
         align-items: center;
         padding-right: $body-padding;
+
+        @media screen and (max-width: $smlBP) {
+            padding-right: $body-padding-sml;
+        }
     }
 
     .create {
         color: #000;
+        position: relative;
+        display: flex;
 
         button {
-            top: ($navHeight - $button-size) * 0.5;
             background-color: $fadedRed;
             color: #fff;
         }
@@ -333,8 +336,12 @@ nav {
     }
 }
 @media screen and (max-width: $smlBP) {
-    nav .sort ul {
-        width: 100vw;
+    body nav .sort {
+        font-size: 18px;
+
+        .sort-option {
+            margin: 0 $body-padding-sml;
+        }
     }
 }
 

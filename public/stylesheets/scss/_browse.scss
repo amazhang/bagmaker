@@ -404,6 +404,17 @@
         text-transform: none;
         letter-spacing: -0.1px;
 
+        @media screen and (max-width: $medBP) {
+            font-size: 24px;
+            width: 200px;
+        }
+
+        @media screen and (max-width: $smlBP) {
+            font-size: 18px;
+            width: 150px;
+            padding: 4px 16px;
+        }
+
         .window-picker-caret {
             position: absolute;
             right: 24px;
@@ -414,6 +425,10 @@
             border-right: 6px solid transparent;
             border-top: 6px solid $darkGrey;
             transform: translateY(-50%);
+
+            @media screen and (max-width: $smlBP) {
+                right: 16px;
+            }
         }
     }
 
@@ -443,6 +458,14 @@
         color: $darkGrey;
         cursor: pointer;
         text-transform: none;
+
+        @media screen and (max-width: $medBP) {
+            font-size: 24px;
+        }
+
+        @media screen and (max-width: $smlBP) {
+            font-size: 18px;
+        }
 
         &:hover {
             background: $lightestGrey;
